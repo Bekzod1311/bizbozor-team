@@ -1,0 +1,59 @@
+{% extends 'base.html' %}
+{% load humanize %}
+
+{% block title %}Sevimlilar | BizBozor{% endblock %}
+
+{% block content %}
+<section class="page-section">
+    <div class="container">
+        <h1 class="page-title">Sevimli e'lonlar</h1>
+        <p class="page-subtitle">Siz saqlab qo‘ygan e’lonlar shu yerda</p>
+
+        {% if favorites %}
+            <div class="business-grid">
+                {% for favorite in favorites %}
+                    <div class="business-card">
+                        <div class="business-card-image">
+                            <a href="{% url 'business_detail' favorite.listing.slug %}">
+                                {% if favorite.listing.main_image %}
+                                    <img src="{{ favorite.listing.main_image.url }}" alt="{{ favorite.listing.title }}">
+                                {% else %}
+                                    <div class="placeholder-image">BizBozor</div>
+                                {% endif %}
+                            </a>
+                        </div>
+
+                        <div class="business-card-body">
+                            <h2 class="business-card-title">
+                                <a href="{% url 'business_detail' favorite.listing.slug %}">
+                                    {{ favorite.listing.title }}
+                                </a>
+                            </h2>
+
+                            <p class="business-card-price">
+                                {{ favorite.listing.price|intcomma }} so'm
+                            </p>
+
+                            <p class="business-card-desc">
+                                {{ favorite.listing.short_description }}
+                            </p>
+
+                            <div class="business-card-footer">
+                                <a href="{% url 'business_detail' favorite.listing.slug %}" class="detail-btn">
+                                    Ko‘rish
+                                </a>
+
+                                <a href="{% url 'toggle_favorite' favorite.listing.slug %}" class="detail-btn dashboard-btn-danger">
+                                    Olib tashlash
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                {% endfor %}
+            </div>
+        {% else %}
+            <p>Hozircha sevimli e’lonlar yo‘q.</p>
+        {% endif %}
+    </div>
+</section>
+{% endblock %}

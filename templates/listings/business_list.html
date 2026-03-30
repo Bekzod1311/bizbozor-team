@@ -1,0 +1,122 @@
+{% extends 'base.html' %}
+{% load humanize %}
+
+{% block title %}Tayyor bizneslar | BizBozor{% endblock %}
+
+{% block content %}
+<section class="page-section">
+    <div class="container">
+        <h1 class="page-title">{{ current_category.name_uz|capfirst }}</h1>
+        <p class="page-subtitle">
+            {{ current_category.name_uz|capfirst }} bo‘yicha tasdiqlangan e'lonlar ro'yxati
+        </p>
+
+        <form method="get" style="margin-bottom: 20px; display: flex; gap: 10px; flex-wrap: wrap;">
+            <input type="text" name="q" placeholder="Qidiruv..."
+                   value="{{ request.GET.q }}">
+
+            <select name="region">
+                <option value="">Barcha hududlar</option>
+                {% for region in regions %}
+                    <option value="{{ region.id }}"
+                        {% if request.GET.region == region.id|stringformat:"s" %}selected{% endif %}>
+                        {{ region.name_uz }}
+                    </option>
+                {% endfor %}
+            </select>
+
+            <input type="number" name="min_price" placeholder="Min narx"
+                   value="{{ request.GET.min_price }}">
+
+            <input type="number" name="max_price" placeholder="Max narx"
+                   value="{{ request.GET.max_price }}">
+
+            <select name="sort">
+                <option value="">Eng yangi</option>
+                <option value="oldest" {% if request.GET.sort == 'oldest' %}selected{% endif %}>Eng eski</option>
+                <option value="price_low" {% if request.GET.sort == 'price_low' %}selected{% endif %}>Eng arzon</option>
+                <option value="price_high" {% if request.GET.sort == 'price_high' %}selected{% endif %}>Eng qimmat</option>
+            </select>
+
+            <button type="submit" class="btn btn-primary">Qidirish</button>
+        </form>
+
+        {% if listings %}
+            <div class="business-grid">
+                {% for listing in listings %}
+                    <div class="business-card">
+
+                        <div class="business-card-image">
+                            <a href="{% url 'business_detail' listing.slug %}">
+                                {% if listing.main_image %}
+                                    <img src="{{ listing.main_image.url }}" alt="{{ listing.title }}">
+                                {% else %}
+                                    <div class="placeholder-image">
+                                        BizBozor
+                                    </div>
+                                {% endif %}
+                            </a>
+                        </div>
+
+                        <div class="business-card-body">
+                            <h2 class="business-card-title">
+                                <a href="{% url 'business_detail' listing.slug %}">
+                                    {{ listing.title }}
+                                </a>
+                            </h2>
+
+                            <p class="business-card-price">
+                                {{ listing.price|intcomma }} so'm
+                            </p>
+
+                            <p class="business-card-desc">
+                                {{ listing.short_description }}
+                            </p>
+
+                            <p class="business-card-meta">
+                                <strong>Hudud:</strong>
+                                {% if listing.region %}{{ listing.region.name_uz }}{% endif %}
+                                {% if listing.district %} / {{ listing.district.name_uz }}{% endif %}
+                            </p>
+
+                            <p class="business-card-meta">
+                                <strong>Telefon:</strong> {{ listing.phone }}
+                            </p>
+
+                            <div class="business-card-footer">
+                                <span class="status-badge">{{ listing.get_status_display }}</span>
+                                <a href="{% url 'business_detail' listing.slug %}" class="detail-btn">
+                                    Batafsil
+                                </a>
+                            </div>
+                        </div>
+
+                    </div>
+                {% endfor %}
+            </div>
+
+            <div style="margin-top: 30px; display: flex; gap: 10px; align-items: center; flex-wrap: wrap;">
+                {% if listings.has_previous %}
+                    <a href="?page={{ listings.previous_page_number }}{% if request.GET.q %}&q={{ request.GET.q }}{% endif %}{% if request.GET.region %}&region={{ request.GET.region }}{% endif %}{% if request.GET.min_price %}&min_price={{ request.GET.min_price }}{% endif %}{% if request.GET.max_price %}&max_price={{ request.GET.max_price }}{% endif %}{% if request.GET.sort %}&sort={{ request.GET.sort }}{% endif %}"
+                       class="btn btn-outline">
+                        Oldingi
+                    </a>
+                {% endif %}
+
+                <span style="font-weight: 600;">
+                    Sahifa {{ listings.number }} / {{ listings.paginator.num_pages }}
+                </span>
+
+                {% if listings.has_next %}
+                    <a href="?page={{ listings.next_page_number }}{% if request.GET.q %}&q={{ request.GET.q }}{% endif %}{% if request.GET.region %}&region={{ request.GET.region }}{% endif %}{% if request.GET.min_price %}&min_price={{ request.GET.min_price }}{% endif %}{% if request.GET.max_price %}&max_price={{ request.GET.max_price }}{% endif %}{% if request.GET.sort %}&sort={{ request.GET.sort }}{% endif %}"
+                       class="btn btn-outline">
+                        Keyingi
+                    </a>
+                {% endif %}
+            </div>
+        {% else %}
+            <p>Hozircha e'lonlar yo'q.</p>
+        {% endif %}
+    </div>
+</section>
+{% endblock %}

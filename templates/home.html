@@ -1,0 +1,101 @@
+{% extends 'base.html' %}
+{% load humanize %}
+
+{% block title %}BizBozor{% endblock %}
+
+{% block content %}
+<section class="page-section">
+    <div class="container">
+
+        <!-- HERO -->
+        <div style="background: linear-gradient(135deg, #0f8fdd, #22afff); border-radius: 24px; padding: 48px 32px; color: white; margin-bottom: 40px;">
+            <h1 style="font-size: 42px; margin-bottom: 14px;">Biznes va mulk savdosi uchun zamonaviy platforma</h1>
+            <p style="font-size: 18px; max-width: 700px; line-height: 1.6;">
+                Tayyor bizneslar, franshizalar, startaplar va xizmatlarni qulay qidiring,
+                taqqoslang va boshqaring.
+            </p>
+
+            <div style="margin-top: 22px; display: flex; gap: 12px; flex-wrap: wrap;">
+                <a href="{% url 'category_list' 'tayyor-biznes' %}" class="btn btn-primary" style="background: white; color: #0f8fdd;">
+                    E’lonlarni ko‘rish
+                </a>
+                <a href="{% url 'create_listing' %}" class="btn btn-outline" style="border-color: white; color: white;">
+                    E’lon berish
+                </a>
+            </div>
+        </div>
+
+        <!-- CATEGORIES -->
+        <div style="margin-bottom: 40px;">
+            <h2 class="page-title" style="font-size: 28px;">Kategoriyalar</h2>
+            <div class="dashboard-filter-bar">
+                {% for category in categories %}
+                    <a href="{% url 'category_list' category.slug %}" class="dashboard-filter-link">
+                        {{ category.name_uz|capfirst }}
+                    </a>
+                {% endfor %}
+            </div>
+        </div>
+
+        <!-- FEATURED / MOST VIEWED -->
+        <div>
+            <h2 class="page-title" style="font-size: 28px;">Eng ko'p ko‘rilgan e’lonlar</h2>
+            <p class="page-subtitle">Hozir foydalanuvchilar orasida eng ko‘p qiziqish uyg‘otayotgan e’lonlar</p>
+
+            {% if featured_listings %}
+                <div class="business-grid">
+                    {% for listing in featured_listings %}
+                        <div class="business-card">
+                            <div class="business-card-image">
+                                <a href="{% url 'business_detail' listing.slug %}">
+                                    {% if listing.main_image %}
+                                        <img src="{{ listing.main_image.url }}" alt="{{ listing.title }}">
+                                    {% else %}
+                                        <div class="placeholder-image">BizBozor</div>
+                                    {% endif %}
+                                </a>
+                            </div>
+
+                            <div class="business-card-body">
+                                <h2 class="business-card-title">
+                                    <a href="{% url 'business_detail' listing.slug %}">
+                                        {{ listing.title }}
+                                    </a>
+                                </h2>
+
+                                <p class="business-card-price">
+                                    {{ listing.price|intcomma }} so'm
+                                </p>
+
+                                <p class="business-card-desc">
+                                    {{ listing.short_description }}
+                                </p>
+
+                                <p class="business-card-meta">
+                                    <strong>Hudud:</strong>
+                                    {% if listing.region %}{{ listing.region.name_uz }}{% endif %}
+                                    {% if listing.district %} / {{ listing.district.name_uz }}{% endif %}
+                                </p>
+
+                                <p class="business-card-meta">
+                                    👁 {{ listing.view_count }} marta ko‘rilgan
+                                </p>
+
+                                <div class="business-card-footer">
+                                    <span class="status-badge status-approved">{{ listing.get_status_display }}</span>
+                                    <a href="{% url 'business_detail' listing.slug %}" class="detail-btn">
+                                        Batafsil
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                    {% endfor %}
+                </div>
+            {% else %}
+                <p>Hozircha e’lonlar yo‘q.</p>
+            {% endif %}
+        </div>
+
+    </div>
+</section>
+{% endblock %}

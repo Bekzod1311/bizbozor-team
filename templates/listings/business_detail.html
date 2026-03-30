@@ -1,0 +1,112 @@
+{% extends 'base.html' %}
+{% load humanize %}
+
+{% block title %}{{ listing.title }} | BizBozor{% endblock %}
+
+{% block content %}
+<section class="detail-section">
+    <div class="container">
+
+        <div class="detail-container">
+
+            <!-- LEFT: IMAGE + GALLERY -->
+            <div>
+                <div class="detail-image">
+                    {% if listing.main_image %}
+                        <img src="{{ listing.main_image.url }}" alt="{{ listing.title }}">
+                    {% else %}
+                        <div class="detail-placeholder">
+                            BizBozor
+                        </div>
+                    {% endif %}
+                </div>
+
+                <!-- GALLERY -->
+                {% if images %}
+                    <div style="margin-top: 15px; display: flex; gap: 10px; flex-wrap: wrap;">
+                        {% for img in images %}
+                            <img src="{{ img.image.url }}"
+                                 alt="{{ listing.title }}"
+                                 style="width: 120px; height: 90px; object-fit: cover; border-radius: 10px; cursor: pointer; border: 1px solid #e5e7eb;">
+                        {% endfor %}
+                    </div>
+                {% endif %}
+            </div>
+
+            <!-- RIGHT: INFO -->
+            <div class="detail-info">
+
+                <h1 class="detail-title">{{ listing.title }}</h1>
+
+                <div class="detail-price">
+                    {{ listing.price|intcomma }} so'm
+                </div>
+
+                <p class="detail-meta">
+                    👁 {{ listing.view_count }} marta ko‘rilgan
+                </p>
+                    
+
+                <p class="detail-meta">
+                    <strong>Hudud:</strong>
+                    {% if listing.region %}{{ listing.region.name_uz }}{% endif %}
+                    {% if listing.district %} / {{ listing.district.name_uz }}{% endif %}
+                </p>
+
+                <p class="detail-meta">
+                    <strong>Telefon:</strong> {{ listing.phone }}
+                </p>
+
+                {% if listing.telegram_username %}
+                    <p class="detail-meta">
+                        <strong>Telegram:</strong>
+                        <a href="https://t.me/{{ listing.telegram_username }}" target="_blank">
+                            @{{ listing.telegram_username }}
+                        </a>
+                    </p>
+                {% endif %}
+
+                {% if listing.google_maps_link %}
+                    <p class="detail-meta">
+                        <a href="{{ listing.google_maps_link }}" target="_blank">
+                            📍 Lokatsiyani ochish
+                        </a>
+                    </p>
+                {% endif %}
+
+                <!-- ACTIONS -->
+                <div class="detail-actions">
+                    <a href="tel:{{ listing.phone }}" class="btn-call">
+                        Qo‘ng‘iroq qilish
+                    </a>
+
+                    {% if listing.telegram_username %}
+                        <a href="https://t.me/{{ listing.telegram_username }}" class="btn-telegram" target="_blank">
+                            Telegram yozish
+                        </a>
+                    {% endif %}
+
+                    {% if request.user.is_authenticated %}
+                        <a href="{% url 'toggle_favorite' listing.slug %}"
+                           class="btn {% if is_favorited %}btn-primary{% else %}btn-outline{% endif %}">
+                            {% if is_favorited %}
+                                Sevimlidan olib tashlash
+                            {% else %}
+                                Sevimliga qo‘shish
+                            {% endif %}
+                        </a>
+                    {% endif %}
+                </div>
+
+            </div>
+        </div>
+
+        <!-- DESCRIPTION -->
+        <div class="detail-description">
+            <h2>Tavsif</h2>
+            <p>{{ listing.description }}</p>
+        </div>
+
+    </div>
+</section>
+{% endblock %}

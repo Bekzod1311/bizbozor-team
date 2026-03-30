@@ -1,0 +1,137 @@
+{% extends 'base.html' %}
+{% load humanize %}
+
+{% block title %}Mening e'lonlarim | BizBozor{% endblock %}
+
+{% block content %}
+<section class="page-section">
+    <div class="container">
+        <h1 class="page-title">Mening e'lonlarim</h1>
+        <p class="page-subtitle">Siz qo‘shgan va boshqarayotgan barcha e’lonlar shu yerda</p>
+
+        <!-- STATS -->
+        <div class="dashboard-stats">
+            <div class="dashboard-stat-card">
+                <div class="dashboard-stat-number">{{ total }}</div>
+                <div class="dashboard-stat-label">Jami</div>
+            </div>
+
+            <div class="dashboard-stat-card">
+                <div class="dashboard-stat-number">{{ approved }}</div>
+                <div class="dashboard-stat-label">Faol</div>
+            </div>
+
+            <div class="dashboard-stat-card">
+                <div class="dashboard-stat-number">{{ pending }}</div>
+                <div class="dashboard-stat-label">Kutilmoqda</div>
+            </div>
+
+            <div class="dashboard-stat-card">
+                <div class="dashboard-stat-number">{{ inactive }}</div>
+                <div class="dashboard-stat-label">Faol emas</div>
+            </div>
+
+            <div class="dashboard-stat-card">
+                <div class="dashboard-stat-number">{{ delete_requested }}</div>
+                <div class="dashboard-stat-label">O‘chirish so‘ralgan</div>
+            </div>
+        </div>
+
+        <!-- FILTERS -->
+        <div class="dashboard-filter-bar">
+            <a href="?" class="dashboard-filter-link">Hammasi</a>
+            <a href="?status=approved" class="dashboard-filter-link">Faol</a>
+            <a href="?status=pending" class="dashboard-filter-link">Kutilmoqda</a>
+            <a href="?status=inactive" class="dashboard-filter-link">Faol emas</a>
+            <a href="?status=delete_requested" class="dashboard-filter-link">O‘chirish so‘ralgan</a>
+        </div>
+
+        {% if listings %}
+            <div class="business-grid">
+                {% for listing in listings %}
+                    <div class="business-card">
+
+                        <div class="business-card-image">
+                            <a href="{% url 'business_detail' listing.slug %}">
+                                {% if listing.main_image %}
+                                    <img src="{{ listing.main_image.url }}" alt="{{ listing.title }}">
+                                {% else %}
+                                    <div class="placeholder-image">
+                                        BizBozor
+                                    </div>
+                                {% endif %}
+                            </a>
+                        </div>
+
+                        <div class="business-card-body">
+                            <h2 class="business-card-title">
+                                <a href="{% url 'business_detail' listing.slug %}">
+                                    {{ listing.title }}
+                                </a>
+                            </h2>
+
+                            <p class="business-card-price">
+                                {{ listing.price|intcomma }} so'm
+                            </p>
+
+                            <p class="business-card-desc">
+                                {{ listing.short_description }}
+                            </p>
+
+                            <p class="business-card-meta">
+                                <strong>Status:</strong>
+                                <span class="status-badge
+                                    {% if listing.status == 'approved' %}status-approved
+                                    {% elif listing.status == 'pending' %}status-pending
+                                    {% elif listing.status == 'inactive' %}status-inactive
+                                    {% elif listing.status == 'delete_requested' %}status-delete
+                                    {% endif %}
+                                ">
+                                    {{ listing.get_status_display }}
+                                </span>
+                            </p>
+
+                            {% if listing.remaining_days is not None %}
+                                <p class="business-card-meta">
+                                    <strong>O‘chirishgacha qoldi:</strong> {{ listing.remaining_days }} kun
+                                </p>
+                            {% endif %}
+
+                            <div class="dashboard-actions">
+                                <a href="{% url 'business_detail' listing.slug %}" class="detail-btn">
+                                    Ko‘rish
+                                </a>
+
+                                <a href="{% url 'edit_listing' listing.slug %}" class="detail-btn dashboard-btn-edit">
+                                    Tahrirlash
+                                </a>
+
+                                {% if listing.status != 'inactive' and listing.status != 'delete_requested' %}
+                                    <a href="{% url 'deactivate_listing' listing.slug %}" class="detail-btn dashboard-btn-danger">
+                                        Faol emas qilish
+                                    </a>
+                                {% endif %}
+
+                                {% if listing.status == 'inactive' %}
+                                    <a href="{% url 'request_delete_listing' listing.slug %}" class="detail-btn dashboard-btn-warning">
+                                        O‘chirish so‘rovi
+                                    </a>
+                                {% endif %}
+
+                                {% if listing.status == 'delete_requested' %}
+                                    <a href="{% url 'delete_listing' listing.slug %}" class="detail-btn dashboard-btn-dark">
+                                        O‘chirish
+                                    </a>
+                                {% endif %}
+                            </div>
+                        </div>
+
+                    </div>
+                {% endfor %}
+            </div>
+        {% else %}
+            <p>Sizda hali e’lonlar yo‘q.</p>
+        {% endif %}
+    </div>
+</section>
+{% endblock %}

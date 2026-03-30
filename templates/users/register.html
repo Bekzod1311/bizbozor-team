@@ -1,0 +1,37 @@
+{% extends 'base.html' %}
+
+{% block title %}Ro'yxatdan o'tish | BizBozor{% endblock %}
+
+{% block content %}
+<section class="page-section">
+    <div class="container" style="max-width: 500px;">
+        <h1 class="page-title">Ro'yxatdan o'tish</h1>
+
+        <form method="post" style="background: white; padding: 24px; border-radius: 16px; border: 1px solid #e5e7eb;">
+            {% csrf_token %}
+
+            <div style="margin-bottom: 16px;">
+                <label>Username</label>
+                <input type="text" name="username" required style="width: 100%; padding: 12px; margin-top: 6px;">
+            </div>
+
+            <div style="margin-bottom: 16px;">
+                <label>Email</label>
+                <input type="email" name="email" required style="width: 100%; padding: 12px; margin-top: 6px;">
+            </div>
+
+            <div style="margin-bottom: 16px;">
+                <label>Parol</label>
+                <input type="password" name="password1" required style="width: 100%; padding: 12px; margin-top: 6px;">
+            </div>
+
+            <div style="margin-bottom: 16px;">
+                <label>Parolni tasdiqlang</label>
+                <input type="password" name="password2" required style="width: 100%; padding: 12px; margin-top: 6px;">
+            </div>
+
+            <button type="submit" class="btn btn-primary">Ro'yxatdan o'tish</button>
+        </form>
+    </div>
+</section>
+{% endblock %}

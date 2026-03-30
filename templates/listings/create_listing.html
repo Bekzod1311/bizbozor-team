@@ -1,0 +1,376 @@
+{% extends 'base.html' %}
+
+{% block title %}E'lon qo'shish | BizBozor{% endblock %}
+
+{% block content %}
+<section class="page-section">
+    <div class="container create-listing-wrap">
+        <div class="create-header">
+            <h1 class="page-title">E'lon qo'shish</h1>
+            <p class="page-subtitle">
+                E'lon ma'lumotlarini to‘ldiring. Rasmlar va aloqa ma'lumotlari qanchalik to‘liq bo‘lsa,
+                e'lon shunchalik ishonchli ko‘rinadi.
+            </p>
+        </div>
+
+        <form method="post" enctype="multipart/form-data" class="listing-form-card">
+            {% csrf_token %}
+            {% if form.non_field_errors %}
+                <div class="form-global-error">
+                    {% for error in form.non_field_errors %}
+                        <div>{{ error }}</div>
+                    {% endfor %}
+                </div>
+            {% endif %}
+
+            <!-- ASOSIY MA'LUMOT -->
+            <div class="listing-form-section">
+                <div class="section-head">
+                    <h3>Asosiy ma'lumot</h3>
+                    <p>E'lonning asosiy ma'lumotlarini kiriting</p>
+                </div>
+
+                <div class="listing-form-grid">
+                    <div class="form-group">
+                        <label for="{{ form.category.id_for_label }}">Kategoriya</label>
+                        {{ form.category }}
+                        {% if form.category.errors %}
+                            <div class="field-error">{{ form.category.errors.0 }}</div>
+                        {% endif %}
+                    </div>
+
+                    <div class="form-group">
+                        <label for="{{ form.region.id_for_label }}">Viloyat</label>
+                        {{ form.region }}
+                        {% if form.region.errors %}
+                            <div class="field-error">{{ form.region.errors.0 }}</div>
+                        {% endif %}
+                    </div>
+
+                    <div class="form-group">
+                        <label for="{{ form.district.id_for_label }}">Tuman / shahar</label>
+                        {{ form.district }}
+                        {% if form.district.errors %}
+                            <div class="field-error">{{ form.district.errors.0 }}</div>
+                        {% endif %}
+                    </div>
+
+                    <div class="form-group">
+                        <label for="{{ form.price.id_for_label }}">Narx</label>
+                        {{ form.price }}
+                        {% if form.price.errors %}
+                            <div class="field-error">{{ form.price.errors.0 }}</div>
+                        {% endif %}
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="{{ form.title.id_for_label }}">Sarlavha</label>
+                    {{ form.title }}
+                    {% if form.title.errors %}
+                        <div class="field-error">{{ form.title.errors.0 }}</div>
+                    {% endif %}
+                </div>
+
+                <div class="form-group">
+                    <label for="{{ form.short_description.id_for_label }}">Qisqa tavsif</label>
+                    {{ form.short_description }}
+                    {% if form.short_description.errors %}
+                        <div class="field-error">{{ form.short_description.errors.0 }}</div>
+                    {% endif %}
+                </div>
+
+                <div class="form-group">
+                    <label for="{{ form.description.id_for_label }}">To'liq tavsif</label>
+                    {{ form.description }}
+                    {% if form.description.errors %}
+                        <div class="field-error">{{ form.description.errors.0 }}</div>
+                    {% endif %}
+                </div>
+            </div>
+
+            <!-- ALOQA -->
+            <div class="listing-form-section">
+                <div class="section-head">
+                    <h3>Aloqa</h3>
+                    <p>Siz bilan bog‘lanish uchun ma'lumotlar</p>
+                </div>
+
+                <div class="listing-form-grid">
+                    <div class="form-group">
+                        <label for="{{ form.phone.id_for_label }}">Telefon</label>
+                        {{ form.phone }}
+                        {% if form.phone.errors %}
+                            <div class="field-error">{{ form.phone.errors.0 }}</div>
+                        {% endif %}
+                    </div>
+
+                    <div class="form-group">
+                        <label for="{{ form.telegram_username.id_for_label }}">Telegram username</label>
+                        {{ form.telegram_username }}
+                        {% if form.telegram_username.errors %}
+                            <div class="field-error">{{ form.telegram_username.errors.0 }}</div>
+                        {% endif %}
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="{{ form.google_maps_link.id_for_label }}">Google Maps link (ixtiyoriy)</label>
+                    {{ form.google_maps_link }}
+                    {% if form.google_maps_link.errors %}
+                        <div class="field-error">{{ form.google_maps_link.errors.0 }}</div>
+                    {% endif %}
+                </div>
+            </div>
+
+            <!-- RASMLAR -->
+            <div class="listing-form-section">
+                <div class="section-head">
+                    <h3>Rasmlar</h3>
+                    <p>Asosiy rasm va qo‘shimcha gallery rasmlarini yuklang</p>
+                </div>
+
+                <div class="image-upload-grid">
+                    <!-- MAIN IMAGE -->
+                    <div class="image-upload-card">
+                        <div class="upload-card-head">
+                            <h4>Asosiy rasm</h4>
+                            <span>1 ta rasm</span>
+                        </div>
+
+                        <div id="main-drop-area" class="upload-drop-area">
+                            <input type="file" name="main_image" id="main_image_input" accept="image/*" hidden>
+
+                            <div class="upload-drop-icon">🖼️</div>
+                            <p class="upload-drop-title">Asosiy rasmni shu yerga tashlang</p>
+                            <p class="upload-drop-subtitle">yoki tugma orqali tanlang</p>
+
+                            <button type="button" id="main-choose-btn" class="btn btn-outline">
+                                Asosiy rasmni tanlash
+                            </button>
+                        </div>
+
+                        <p id="main-file-info" class="upload-status-text">
+                            Hali asosiy rasm tanlanmagan
+                        </p>
+
+                        <div id="main-preview-container" class="main-preview-box"></div>
+                    </div>
+
+                    <!-- GALLERY -->
+                    <div class="image-upload-card">
+                        <div class="upload-card-head">
+                            <h4>Qo‘shimcha rasmlar</h4>
+                            <span>1 dan 8 tagacha</span>
+                        </div>
+
+                        <div id="gallery-drop-area" class="upload-drop-area">
+                            <input type="file" name="gallery_images" id="gallery_images" multiple accept="image/*" hidden>
+
+                            <div class="upload-drop-icon">📸</div>
+                            <p class="upload-drop-title">Gallery rasmlarni shu yerga tashlang</p>
+                            <p class="upload-drop-subtitle">yoki tugma orqali tanlang</p>
+
+                            <button type="button" id="gallery-choose-btn" class="btn btn-outline">
+                                Rasmlarni tanlash
+                            </button>
+                        </div>
+
+                        <p id="gallery-file-info" class="upload-status-text">
+                            Hali gallery rasm tanlanmagan
+                        </p>
+
+                        <div id="gallery-preview-container" class="gallery-preview-grid"></div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="form-submit-row">
+                <button type="submit" class="btn btn-primary form-submit-btn">
+                    E'lonni saqlash
+                </button>
+            </div>
+        </form>
+    </div>
+</section>
+
+<script>
+    // =========================
+    // MAIN IMAGE
+    // =========================
+    const mainDropArea = document.getElementById('main-drop-area');
+    const mainInput = document.getElementById('main_image_input');
+    const mainChooseBtn = document.getElementById('main-choose-btn');
+    const mainInfo = document.getElementById('main-file-info');
+    const mainPreview = document.getElementById('main-preview-container');
+
+    mainChooseBtn.addEventListener('click', () => {
+        mainInput.click();
+    });
+
+    mainDropArea.addEventListener('click', (e) => {
+        if (e.target.id !== 'main-choose-btn') {
+            mainInput.click();
+        }
+    });
+
+    mainDropArea.addEventListener('dragover', (e) => {
+        e.preventDefault();
+        mainDropArea.classList.add('dragover');
+    });
+
+    mainDropArea.addEventListener('dragleave', (e) => {
+        e.preventDefault();
+        mainDropArea.classList.remove('dragover');
+    });
+
+    mainDropArea.addEventListener('drop', (e) => {
+        e.preventDefault();
+        mainDropArea.classList.remove('dragover');
+
+        const files = Array.from(e.dataTransfer.files).filter(file => file.type.startsWith('image/'));
+        if (!files.length) {
+            mainInfo.textContent = "Faqat rasm fayl tanlang.";
+            return;
+        }
+
+        const dt = new DataTransfer();
+        dt.items.add(files[0]);
+        mainInput.files = dt.files;
+
+        renderMainPreview(files[0]);
+    });
+
+    mainInput.addEventListener('change', (e) => {
+        const file = e.target.files[0];
+        if (!file) return;
+        renderMainPreview(file);
+    });
+
+    function renderMainPreview(file) {
+        mainPreview.innerHTML = "";
+        mainInfo.textContent = `Tanlangan rasm: ${file.name}`;
+
+        const reader = new FileReader();
+        reader.onload = function(e) {
+            const img = document.createElement('img');
+            img.src = e.target.result;
+            img.alt = "Asosiy rasm";
+            img.className = "main-preview-image";
+            mainPreview.appendChild(img);
+        };
+        reader.readAsDataURL(file);
+    }
+
+    // =========================
+    // GALLERY IMAGES
+    // =========================
+    const galleryDropArea = document.getElementById('gallery-drop-area');
+    const galleryInput = document.getElementById('gallery_images');
+    const galleryChooseBtn = document.getElementById('gallery-choose-btn');
+    const galleryInfo = document.getElementById('gallery-file-info');
+    const galleryPreview = document.getElementById('gallery-preview-container');
+
+    let selectedGalleryFiles = [];
+
+    galleryChooseBtn.addEventListener('click', () => {
+        galleryInput.click();
+    });
+
+    galleryDropArea.addEventListener('click', (e) => {
+        if (e.target.id !== 'gallery-choose-btn') {
+            galleryInput.click();
+        }
+    });
+
+    galleryDropArea.addEventListener('dragover', (e) => {
+        e.preventDefault();
+        galleryDropArea.classList.add('dragover');
+    });
+
+    galleryDropArea.addEventListener('dragleave', (e) => {
+        e.preventDefault();
+        galleryDropArea.classList.remove('dragover');
+    });
+
+    galleryDropArea.addEventListener('drop', (e) => {
+        e.preventDefault();
+        galleryDropArea.classList.remove('dragover');
+
+        const files = Array.from(e.dataTransfer.files);
+        handleGalleryFiles(files);
+    });
+
+    galleryInput.addEventListener('change', (e) => {
+        const files = Array.from(e.target.files);
+        handleGalleryFiles(files);
+    });
+
+    function handleGalleryFiles(files) {
+        const imageFiles = files.filter(file => file.type.startsWith('image/'));
+
+        if (imageFiles.length === 0) {
+            galleryInfo.textContent = "Faqat rasm fayllarni tanlang.";
+            return;
+        }
+
+        
+        if (imageFiles.length > 8) {
+            galleryInfo.textContent = "Maksimum 8 ta rasm tanlash mumkin.";
+            galleryPreview.innerHTML = "";
+            galleryInput.value = "";
+            selectedGalleryFiles = [];
+            return;
+        }
+
+        selectedGalleryFiles = imageFiles;
+        updateGalleryPreview();
+        updateGalleryInputFiles();
+    }
+
+    function updateGalleryPreview() {
+        galleryPreview.innerHTML = "";
+
+        if (selectedGalleryFiles.length === 0) {
+            galleryInfo.textContent = "Hali gallery rasm tanlanmagan";
+            return;
+        }
+
+        galleryInfo.textContent = `${selectedGalleryFiles.length} ta rasm tanlandi`;
+
+        selectedGalleryFiles.forEach((file, index) => {
+            const reader = new FileReader();
+
+            reader.onload = function(e) {
+                const item = document.createElement('div');
+                item.className = 'gallery-preview-item';
+
+                const img = document.createElement('img');
+                img.src = e.target.result;
+                img.alt = `Rasm ${index + 1}`;
+                img.className = 'gallery-preview-image';
+
+                const cap = document.createElement('div');
+                cap.className = 'gallery-preview-caption';
+                cap.textContent = `Rasm ${index + 1}`;
+
+                item.appendChild(img);
+                item.appendChild(cap);
+                galleryPreview.appendChild(item);
+            };
+
+            reader.readAsDataURL(file);
+        });
+    }
+
+    function updateGalleryInputFiles() {
+        const dataTransfer = new DataTransfer();
+
+        selectedGalleryFiles.forEach(file => {
+            dataTransfer.items.add(file);
+        });
+
+        galleryInput.files = dataTransfer.files;
+    }
+</script>
+{% endblock %}

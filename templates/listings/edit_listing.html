@@ -1,0 +1,305 @@
+{% extends 'base.html' %}
+
+{% block title %}E'lonni tahrirlash | BizBozor{% endblock %}
+
+{% block content %}
+<section class="page-section">
+    <div class="container create-listing-wrap">
+        <div class="create-header">
+            <h1 class="page-title">E'lonni tahrirlash</h1>
+            <p class="page-subtitle">
+                E'lon ma'lumotlarini yangilang. O'zgarishlardan keyin ma'lumotlar saqlanadi.
+            </p>
+        </div>
+
+        <form method="post" enctype="multipart/form-data" class="listing-form-card">
+            {% csrf_token %}
+
+            <!-- ASOSIY MA'LUMOT -->
+            <div class="listing-form-section">
+                <div class="section-head">
+                    <h3>Asosiy ma'lumot</h3>
+                    <p>E'lonning asosiy ma'lumotlarini tahrir qiling</p>
+                </div>
+
+                <div class="listing-form-grid">
+                    <div class="form-group">
+                        <label for="{{ form.category.id_for_label }}">Kategoriya</label>
+                        {{ form.category }}
+                        {% if form.category.errors %}
+                            <div class="field-error">{{ form.category.errors.0 }}</div>
+                        {% endif %}
+                    </div>
+
+                    <div class="form-group">
+                        <label for="{{ form.region.id_for_label }}">Viloyat</label>
+                        {{ form.region }}
+                        {% if form.region.errors %}
+                            <div class="field-error">{{ form.region.errors.0 }}</div>
+                        {% endif %}
+                    </div>
+
+                    <div class="form-group">
+                        <label for="{{ form.district.id_for_label }}">Tuman / shahar</label>
+                        {{ form.district }}
+                        {% if form.district.errors %}
+                            <div class="field-error">{{ form.district.errors.0 }}</div>
+                        {% endif %}
+                    </div>
+
+                    <div class="form-group">
+                        <label for="{{ form.price.id_for_label }}">Narx</label>
+                        {{ form.price }}
+                        {% if form.price.errors %}
+                            <div class="field-error">{{ form.price.errors.0 }}</div>
+                        {% endif %}
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="{{ form.title.id_for_label }}">Sarlavha</label>
+                    {{ form.title }}
+                    {% if form.title.errors %}
+                        <div class="field-error">{{ form.title.errors.0 }}</div>
+                    {% endif %}
+                </div>
+
+                <div class="form-group">
+                    <label for="{{ form.short_description.id_for_label }}">Qisqa tavsif</label>
+                    {{ form.short_description }}
+                    {% if form.short_description.errors %}
+                        <div class="field-error">{{ form.short_description.errors.0 }}</div>
+                    {% endif %}
+                </div>
+
+                <div class="form-group">
+                    <label for="{{ form.description.id_for_label }}">To'liq tavsif</label>
+                    {{ form.description }}
+                    {% if form.description.errors %}
+                        <div class="field-error">{{ form.description.errors.0 }}</div>
+                    {% endif %}
+                </div>
+            </div>
+
+            <!-- ALOQA -->
+            <div class="listing-form-section">
+                <div class="section-head">
+                    <h3>Aloqa</h3>
+                    <p>Siz bilan bog‘lanish uchun ma'lumotlar</p>
+                </div>
+
+                <div class="listing-form-grid">
+                    <div class="form-group">
+                        <label for="{{ form.phone.id_for_label }}">Telefon</label>
+                        {{ form.phone }}
+                        {% if form.phone.errors %}
+                            <div class="field-error">{{ form.phone.errors.0 }}</div>
+                        {% endif %}
+                    </div>
+
+                    <div class="form-group">
+                        <label for="{{ form.telegram_username.id_for_label }}">Telegram username</label>
+                        {{ form.telegram_username }}
+                        {% if form.telegram_username.errors %}
+                            <div class="field-error">{{ form.telegram_username.errors.0 }}</div>
+                        {% endif %}
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="{{ form.google_maps_link.id_for_label }}">Google Maps link (ixtiyoriy)</label>
+                    {{ form.google_maps_link }}
+                    {% if form.google_maps_link.errors %}
+                        <div class="field-error">{{ form.google_maps_link.errors.0 }}</div>
+                    {% endif %}
+                </div>
+            </div>
+
+            <!-- RASMLAR -->
+            <div class="listing-form-section">
+                <div class="section-head">
+                    <h3>Rasmlar</h3>
+                    <p>Asosiy rasmni yangilang, eski gallery rasmlarni o‘chiring yoki yangi rasmlar qo‘shing</p>
+                </div>
+
+                <div class="form-group">
+                    <label for="{{ form.main_image.id_for_label }}">Asosiy rasm</label>
+                    {{ form.main_image }}
+                    {% if form.main_image.errors %}
+                        <div class="field-error">{{ form.main_image.errors.0 }}</div>
+                    {% endif %}
+                </div>
+
+                {% if listing.main_image %}
+                    <div class="main-preview-box">
+                        <img src="{{ listing.main_image.url }}" alt="{{ listing.title }}" class="main-preview-image">
+                    </div>
+                {% endif %}
+
+                <!-- MAVJUD GALLERY -->
+                {% if listing.images.all %}
+                    <div style="margin-top: 24px;">
+                        <h4 style="margin-bottom: 12px;">Mavjud gallery rasmlar</h4>
+
+                        <div class="gallery-preview-grid">
+                            {% for img in listing.images.all %}
+                                <div class="gallery-preview-item" style="position: relative;">
+                                    <img src="{{ img.image.url }}" alt="Gallery image" class="gallery-preview-image">
+
+                                    <div class="gallery-preview-caption">
+                                        <label style="display: flex; align-items: center; gap: 6px; justify-content: center;">
+                                            <input type="checkbox" name="delete_images" value="{{ img.id }}">
+                                            O‘chirish
+                                        </label>
+                                    </div>
+                                </div>
+                            {% endfor %}
+                        </div>
+                    </div>
+                {% endif %}
+
+                <!-- YANGI GALLERY RASMLAR -->
+                <div style="margin-top: 24px;">
+                    <label style="font-weight: 700;">
+                        Yangi gallery rasmlar qo‘shish (maksimum 8 ta)
+                    </label>
+
+                    <div id="edit-gallery-drop-area" class="upload-drop-area" style="margin-top: 10px;">
+                        <input type="file" name="gallery_images" id="edit_gallery_images" multiple accept="image/*" hidden>
+
+                        <div class="upload-drop-icon">📸</div>
+                        <p class="upload-drop-title">Yangi rasmlarni shu yerga tashlang</p>
+                        <p class="upload-drop-subtitle">yoki tugma orqali tanlang</p>
+
+                        <button type="button" id="edit-gallery-choose-btn" class="btn btn-outline">
+                            Yangi rasmlarni tanlash
+                        </button>
+                    </div>
+
+                    <p id="edit-gallery-file-info" class="upload-status-text">
+                        Hali yangi gallery rasm tanlanmagan
+                    </p>
+
+                    <div id="edit-gallery-preview-container" class="gallery-preview-grid"></div>
+                </div>
+            </div>
+
+            <div class="form-submit-row">
+                <button type="submit" class="btn btn-primary form-submit-btn">
+                    O'zgarishlarni saqlash
+                </button>
+            </div>
+        </form>
+    </div>
+</section>
+
+<script>
+    const editGalleryDropArea = document.getElementById('edit-gallery-drop-area');
+    const editGalleryInput = document.getElementById('edit_gallery_images');
+    const editGalleryChooseBtn = document.getElementById('edit-gallery-choose-btn');
+    const editGalleryInfo = document.getElementById('edit-gallery-file-info');
+    const editGalleryPreview = document.getElementById('edit-gallery-preview-container');
+
+    let editSelectedGalleryFiles = [];
+
+    editGalleryChooseBtn.addEventListener('click', () => {
+        editGalleryInput.click();
+    });
+
+    editGalleryDropArea.addEventListener('click', (e) => {
+        if (e.target.id !== 'edit-gallery-choose-btn') {
+            editGalleryInput.click();
+        }
+    });
+
+    editGalleryDropArea.addEventListener('dragover', (e) => {
+        e.preventDefault();
+        editGalleryDropArea.classList.add('dragover');
+    });
+
+    editGalleryDropArea.addEventListener('dragleave', (e) => {
+        e.preventDefault();
+        editGalleryDropArea.classList.remove('dragover');
+    });
+
+    editGalleryDropArea.addEventListener('drop', (e) => {
+        e.preventDefault();
+        editGalleryDropArea.classList.remove('dragover');
+
+        const files = Array.from(e.dataTransfer.files);
+        handleEditGalleryFiles(files);
+    });
+
+    editGalleryInput.addEventListener('change', (e) => {
+        const files = Array.from(e.target.files);
+        handleEditGalleryFiles(files);
+    });
+
+    function handleEditGalleryFiles(files) {
+        const imageFiles = files.filter(file => file.type.startsWith('image/'));
+
+        if (imageFiles.length === 0) {
+            editGalleryInfo.textContent = "Faqat rasm fayllarni tanlang.";
+            return;
+        }
+
+        if (imageFiles.length > 8) {
+            editGalleryInfo.textContent = "Bir martada maksimum 8 ta rasm tanlash mumkin.";
+            editGalleryPreview.innerHTML = "";
+            editGalleryInput.value = "";
+            editSelectedGalleryFiles = [];
+            return;
+        }
+
+        editSelectedGalleryFiles = imageFiles;
+        updateEditGalleryPreview();
+        updateEditGalleryInputFiles();
+    }
+
+    function updateEditGalleryPreview() {
+        editGalleryPreview.innerHTML = "";
+
+        if (editSelectedGalleryFiles.length === 0) {
+            editGalleryInfo.textContent = "Hali yangi gallery rasm tanlanmagan";
+            return;
+        }
+
+        editGalleryInfo.textContent = `${editSelectedGalleryFiles.length} ta yangi rasm tanlandi`;
+
+        editSelectedGalleryFiles.forEach((file, index) => {
+            const reader = new FileReader();
+
+            reader.onload = function(e) {
+                const item = document.createElement('div');
+                item.className = 'gallery-preview-item';
+
+                const img = document.createElement('img');
+                img.src = e.target.result;
+                img.alt = `Yangi rasm ${index + 1}`;
+                img.className = 'gallery-preview-image';
+
+                const cap = document.createElement('div');
+                cap.className = 'gallery-preview-caption';
+                cap.textContent = `Yangi rasm ${index + 1}`;
+
+                item.appendChild(img);
+                item.appendChild(cap);
+                editGalleryPreview.appendChild(item);
+            };
+
+            reader.readAsDataURL(file);
+        });
+    }
+
+    function updateEditGalleryInputFiles() {
+        const dataTransfer = new DataTransfer();
+
+        editSelectedGalleryFiles.forEach(file => {
+            dataTransfer.items.add(file);
+        });
+
+        editGalleryInput.files = dataTransfer.files;
+    }
+</script>
+
+{% endblock %}
