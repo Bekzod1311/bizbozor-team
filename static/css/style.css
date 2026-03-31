@@ -45,15 +45,26 @@ body {
     gap: 18px;
 }
 
+/* Default holat */
 .main-nav a {
     text-decoration: none;
     color: #1f2937;
     font-weight: 600;
-    transition: 0.2s ease;
+    transition: all 0.3s ease;
 }
 
+/* NAV ustiga hover bo‘lsa – hammasi xira */
+.main-nav:hover a {
+    opacity: 0.3;
+    filter: grayscale(100%);
+}
+
+/* Hover qilingan element – yana rangli */
 .main-nav a:hover {
+    opacity: 1;
+    filter: grayscale(0%);
     color: #22afff;
+    transform: scale(1.1);
 }
 
 /* Tugmalar */
