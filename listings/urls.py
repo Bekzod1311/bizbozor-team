@@ -10,6 +10,7 @@ from .views import (
     delete_listing_view,
     toggle_favorite_view,
     favorite_list_view,
+    notification_list_view,
 )
 
 urlpatterns = [
@@ -34,4 +35,5 @@ urlpatterns = [
     # FAVORITE
     path('favorites/', favorite_list_view, name='favorite_list'),
     path('favorite/<slug:slug>/', toggle_favorite_view, name='toggle_favorite'),
+    path('notifications/', notification_list_view, name='notifications'),
 ]

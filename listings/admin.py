@@ -1,6 +1,6 @@
 from django.contrib import admin
 from django.utils.html import format_html
-from .models import Category, Region, District, Listing, ListingImage, Favorite
+from .models import Category, Region, District, Listing, ListingImage, Favorite, Notification
 
 
 # 🔥 INLINE IMAGE (gallery admin ichida ko‘rish uchun)
@@ -104,3 +104,7 @@ class ListingImageAdmin(admin.ModelAdmin):
 @admin.register(Favorite)
 class FavoriteAdmin(admin.ModelAdmin):
     list_display = ('user', 'listing', 'created_at')
+
+@admin.register(Notification)
+class NotificationAdmin(admin.ModelAdmin):
+    list_display = ('user', 'message', 'is_read', 'created_at')

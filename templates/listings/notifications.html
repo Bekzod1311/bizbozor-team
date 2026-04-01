@@ -1,0 +1,29 @@
+{% extends 'base.html' %}
+
+{% block title %}Bildirishnomalar | BizBozor{% endblock %}
+
+{% block content %}
+<section class="page-section">
+    <div class="container">
+        <h1 class="page-title">Bildirishnomalar</h1>
+        <p class="page-subtitle">Siz uchun yaratilgan barcha bildirishnomalar shu yerda</p>
+
+        {% if notifications %}
+            <div style="display: grid; gap: 14px;">
+                {% for n in notifications %}
+                    <div style="background: #ffffff; border: 1px solid #e5e7eb; border-radius: 14px; padding: 18px; box-shadow: 0 4px 12px rgba(15, 23, 42, 0.04);">
+                        <p style="margin-bottom: 8px; font-weight: 600; color: #0f172a;">
+                            {{ n.message }}
+                        </p>
+                        <small style="color: #64748b;">
+                            {{ n.created_at }}
+                        </small>
+                    </div>
+                {% endfor %}
+            </div>
+        {% else %}
+            <p>Hozircha bildirishnomalar yo‘q.</p>
+        {% endif %}
+    </div>
+</section>
+{% endblock %}

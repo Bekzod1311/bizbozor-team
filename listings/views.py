@@ -1,5 +1,5 @@
 from django.shortcuts import render, get_object_or_404, redirect
-from .models import Listing, ListingImage, Region, Category, Favorite
+from .models import Listing, ListingImage, Region, Category, Favorite, Notification
 from django.contrib.auth.decorators import login_required
 from .forms import ListingForm
 from django.contrib import messages
@@ -106,6 +106,11 @@ def create_listing_view(request):
             listing.status = 'pending'
             listing.save()
 
+            Notification.objects.create(
+                user=request.user,
+                message="E'loningiz muvaffaqiyatli yuborildi va ko‘rib chiqilmoqda."
+            )
+
             # Multi image fayllarni olamiz
             gallery_images = request.FILES.getlist('gallery_images')
 
@@ -174,6 +179,20 @@ def my_listings_view(request):
 
 
 @login_required
+def notification_list_view(request):
+    notifications = Notification.objects.filter(
+        user=request.user
+    ).order_by('-created_at')
+
+    context = {
+        'notifications': notifications
+    }
+
+    return render(request, 'listings/notifications.html', context)
+
+
+
+@login_required
 def edit_listing_view(request, slug):
     """
     User o'z e'lonini tahrir qiladi.
@@ -190,6 +209,11 @@ def edit_listing_view(request, slug):
             edited_listing = form.save(commit=False)
             edited_listing.owner = request.user
             edited_listing.save()
+
+            Notification.objects.create(
+                user=request.user,
+                message="E'loningiz yangilandi."
+            )
 
             # 1. O'chiriladigan gallery rasmlarni olish
             delete_image_ids = request.POST.getlist('delete_images')
@@ -242,6 +266,11 @@ def deactivate_listing_view(request, slug):
     listing.status = 'inactive'
     listing.save()
 
+    Notification.objects.create(
+        user=request.user,
+        message="E'lon faol emas holatga o‘tkazildi."
+    )
+
     messages.success(request, "E'lon faol emas holatiga o'tkazildi.")
     return redirect('my_listings')
 
@@ -257,6 +286,10 @@ def request_delete_listing_view(request, slug):
         listing.status = 'delete_requested'
         listing.delete_requested_at = timezone.now()
         listing.save()
+        Notification.objects.create(
+            user=request.user,
+            message="E'lon faol emas holatga o‘tkazildi."
+        )
         messages.success(request, "E'lon uchun o‘chirish so‘rovi yuborildi.")
     else:
         messages.error(request, "Avval e'lonni faol emas holatiga o'tkazing.")
