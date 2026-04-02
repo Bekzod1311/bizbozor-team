@@ -163,6 +163,16 @@ class Listing(models.Model):
         verbose_name="O‘chirish so‘rovi vaqti"
     )
 
+    approved_at = models.DateTimeField(blank=True, null=True)
+    approved_by = models.ForeignKey(
+        User,
+        on_delete=models.SET_NULL,
+        blank=True,
+        null=True,
+        related_name='approved_listings'
+    )
+    rejection_reason = models.TextField(blank=True, null=True)
+
     def save(self, *args, **kwargs):
         """
         Agar slug bo'sh bo'lsa, title asosida avtomatik yasab beradi.
@@ -244,3 +254,5 @@ class Notification(models.Model):
 
     def __str__(self):
         return f"{self.user.username} - {self.message[:30]}"
+    
+

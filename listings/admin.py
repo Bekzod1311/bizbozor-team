@@ -1,5 +1,6 @@
 from django.contrib import admin
 from django.utils.html import format_html
+from django.utils import timezone
 from .models import Category, Region, District, Listing, ListingImage, Favorite, Notification
 
 
@@ -39,6 +40,8 @@ class ListingAdmin(admin.ModelAdmin):
         'region',
         'price',
         'colored_status',
+        'approved_by',
+        'approved_at',
         'view_count',
         'created_at'
     )
@@ -47,14 +50,16 @@ class ListingAdmin(admin.ModelAdmin):
         'status',
         'category',
         'region',
-        'created_at'
+        'created_at',
+        'approved_at',
     )
 
     search_fields = (
         'title',
         'description',
         'owner__username',
-        'phone'
+        'phone',
+        'rejection_reason'
     )
 
     list_editable = (
@@ -63,11 +68,14 @@ class ListingAdmin(admin.ModelAdmin):
 
     ordering = ('-created_at',)
 
+    readonly_fields = ('approved_at',)
+
     list_per_page = 20
 
     inlines = [ListingImageInline]
 
-    actions = ['make_approved']
+    # 🔥 IKKITA ACTION
+    actions = ['make_approved', 'make_pending']
 
     # 🔥 STATUS RANG BILAN
     def colored_status(self, obj):
@@ -86,12 +94,38 @@ class ListingAdmin(admin.ModelAdmin):
 
     colored_status.short_description = 'Status'
 
-    # 🔥 BULK APPROVE
+    # 🔥 APPROVE (notification bilan)
     def make_approved(self, request, queryset):
-        queryset.update(status='approved')
+        for listing in queryset:
+            listing.status = 'approved'
+            listing.approved_at = timezone.now()
+            listing.approved_by = request.user
+            listing.rejection_reason = ''
+            listing.save()
+
+            Notification.objects.create(
+                user=listing.owner,
+                message=f'"{listing.title}" e\'loningiz tasdiqlandi.'
+            )
+
         self.message_user(request, "Tanlangan e'lonlar tasdiqlandi.")
 
     make_approved.short_description = "Tanlanganlarni tasdiqlash"
+
+    # 🔥 PENDING / REJECT
+    def make_pending(self, request, queryset):
+        for listing in queryset:
+            listing.status = 'pending'
+            listing.save()
+
+            Notification.objects.create(
+                user=listing.owner,
+                message=f'"{listing.title}" e\'loningiz ko‘rib chiqish holatiga qaytarildi.'
+            )
+
+        self.message_user(request, "Tanlangan e'lonlar pending holatga qaytarildi.")
+
+    make_pending.short_description = "Tanlanganlarni pending qilish"
 
 
 # ListingImage admin
