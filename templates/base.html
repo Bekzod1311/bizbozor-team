@@ -36,6 +36,24 @@
                     <a href="{% url 'my_listings' %}" class="btn btn-outline">Mening e'lonlarim</a>
                     <a href="{% url 'notifications' %}" class="btn btn-outline">
                         Bildirishnomalar
+                        {% if notification_count > 0 %}
+                            <span style="
+                                margin-left: 6px;
+                                display: inline-flex;
+                                align-items: center;
+                                justify-content: center;
+                                min-width: 22px;
+                                height: 22px;
+                                padding: 0 6px;
+                                border-radius: 999px;
+                                background: #ef4444;
+                                color: #ffffff;
+                                font-size: 12px;
+                                font-weight: 700;
+                            ">
+                                {{ notification_count }}
+                            </span>
+                        {% endif %}
                     </a>
                     <a href="{% url 'favorite_list' %}" class="btn btn-outline">Sevimlilar</a>
                     <a href="{% url 'logout' %}" class="btn btn-outline">Chiqish</a>

@@ -184,12 +184,17 @@ def notification_list_view(request):
         user=request.user
     ).order_by('-created_at')
 
+    # Avval unread notificationlarni o‘qilgan qilamiz
+    Notification.objects.filter(
+        user=request.user,
+        is_read=False
+    ).update(is_read=True)
+
     context = {
         'notifications': notifications
     }
 
     return render(request, 'listings/notifications.html', context)
-
 
 
 @login_required
