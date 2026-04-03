@@ -85,11 +85,27 @@
                                     {% elif listing.status == 'pending' %}status-pending
                                     {% elif listing.status == 'inactive' %}status-inactive
                                     {% elif listing.status == 'delete_requested' %}status-delete
+                                    {% elif listing.status == 'rejected' %}status-rejected
                                     {% endif %}
                                 ">
                                     {{ listing.get_status_display }}
                                 </span>
                             </p>
+
+                            <!-- 👇 SHU YERGA QO‘SH -->
+                            {% if listing.status == 'rejected' and listing.rejection_reason %}
+                                <div style="
+                                    margin-top: 12px;
+                                    padding: 12px;
+                                    border-radius: 12px;
+                                    background: #fef2f2;
+                                    border: 1px solid #fecaca;
+                                    color: #991b1b;
+                                ">
+                                    <strong>Rad etilish sababi:</strong><br>
+                                    {{ listing.rejection_reason }}
+                                </div>
+                            {% endif %}
 
                             {% if listing.remaining_days is not None %}
                                 <p class="business-card-meta">

@@ -41,6 +41,13 @@
                 <div class="detail-price">
                     {{ listing.price|intcomma }} so'm
                 </div>
+                
+                {% if listing.status == 'rejected' and listing.rejection_reason and request.user == listing.owner %}
+                    <div style="margin: 14px 0; padding: 12px; border-radius: 12px; background: #fef2f2; border: 1px solid #fecaca; color: #991b1b;">
+                        <strong>Rad etilish sababi:</strong><br>
+                        {{ listing.rejection_reason }}
+                    </div>
+                {% endif %}
 
                 <p class="detail-meta">
                     👁 {{ listing.view_count }} marta ko‘rilgan

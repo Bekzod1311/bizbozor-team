@@ -70,12 +70,34 @@ class ListingAdmin(admin.ModelAdmin):
 
     readonly_fields = ('approved_at',)
 
+    fields = (
+        'owner',
+        'category',
+        'region',
+        'district',
+        'title',
+        'slug',
+        'price',
+        'short_description',
+        'description',
+        'address',
+        'google_maps_link',
+        'phone',
+        'telegram_username',
+        'main_image',
+        'status',
+        'rejection_reason',
+        'approved_by',
+        'approved_at',
+        'view_count',
+    )
+
     list_per_page = 20
 
     inlines = [ListingImageInline]
 
     # 🔥 IKKITA ACTION
-    actions = ['make_approved', 'make_pending']
+    actions = ['make_approved', 'make_pending', 'make_rejected']
 
     # 🔥 STATUS RANG BILAN
     def colored_status(self, obj):
@@ -126,6 +148,23 @@ class ListingAdmin(admin.ModelAdmin):
         self.message_user(request, "Tanlangan e'lonlar pending holatga qaytarildi.")
 
     make_pending.short_description = "Tanlanganlarni pending qilish"
+
+    def make_rejected(self, request, queryset):
+        for listing in queryset:
+            listing.status = 'rejected'
+            if not listing.rejection_reason:
+                listing.rejection_reason = "E'lon moderatsiyadan o'tmadi."
+            listing.save()
+
+            Notification.objects.create(
+                user=listing.owner,
+                message=f'"{listing.title}" e\'loningiz rad etildi.'
+            )
+
+        self.message_user(request, "Tanlangan e'lonlar rad etildi.")
+
+    make_rejected.short_description = "Tanlanganlarni rad etish"
+
 
 
 # ListingImage admin

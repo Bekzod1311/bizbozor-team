@@ -390,6 +390,11 @@ body {
     color: #5b21b6;
 }
 
+.status-rejected {
+    background: #fee2e2;
+    color: #b91c1c;
+}
+
 
 .form-card {
     background: #fff;
