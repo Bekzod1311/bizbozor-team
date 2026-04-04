@@ -7,19 +7,20 @@
 <section class="page-section">
     <div class="container">
 
-        <!-- HERO -->
-        <div style="background: linear-gradient(135deg, #0f8fdd, #22afff); border-radius: 24px; padding: 48px 32px; color: white; margin-bottom: 40px;">
-            <h1 style="font-size: 42px; margin-bottom: 14px;">Biznes va mulk savdosi uchun zamonaviy platforma</h1>
-            <p style="font-size: 18px; max-width: 700px; line-height: 1.6;">
+        <!-- HERO New? -->
+        <div class="hero">
+            <h1>Biznes va mulk savdosi uchun zamonaviy platforma</h1>
+            <p>
                 Tayyor bizneslar, franshizalar, startaplar va xizmatlarni qulay qidiring,
                 taqqoslang va boshqaring.
             </p>
 
-            <div style="margin-top: 22px; display: flex; gap: 12px; flex-wrap: wrap;">
-                <a href="{% url 'category_list' 'tayyor-biznes' %}" class="btn btn-primary" style="background: white; color: #0f8fdd;">
+            <div class="hero-actions">
+                <a href="{% url 'category_list' 'tayyor-biznes' %}" class="btn btn-light">
                     E’lonlarni ko‘rish
                 </a>
-                <a href="{% url 'create_listing' %}" class="btn btn-outline" style="border-color: white; color: white;">
+
+                <a href="{% url 'create_listing' %}" class="btn btn-primary">
                     E’lon berish
                 </a>
             </div>

@@ -4,15 +4,13 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
     <title>{% block title %}BizBozor{% endblock %}</title>
 
-    <!-- CSS -->
     <link rel="stylesheet" href="{% static 'css/style.css' %}">
 </head>
 <body>
 
-    <!-- HEADER -->
+    <!-- HEADER New? -->
     <header class="site-header">
         <div class="container header-inner">
 
@@ -29,56 +27,63 @@
                 <a href="{% url 'category_list' 'xizmat' %}">Xizmatlar</a>
             </nav>
 
-            <!-- ACTION BUTTONS -->
+            <!-- ACTIONS -->
             <div class="header-actions">
                 {% if request.user.is_authenticated %}
-                    <span style="font-weight: 600;">Salom, {{ request.user.username }}</span>
-                    <a href="{% url 'my_listings' %}" class="btn btn-outline">Mening e'lonlarim</a>
-                    <a href="{% url 'notifications' %}" class="btn btn-outline">
-                        Bildirishnomalar
+                    <a href="#" class="user-chip user-chip-link">
+                        <span class="user-chip-avatar">
+                            {{ request.user.username|first|upper }}
+                        </span>
+                        <span>Salom, {{ request.user.username }}</span>
+                    </a>
+
+                    <a href="{% url 'my_listings' %}" class="nav-action-btn nav-action-outline">
+                        Mening e'lonlarim
+                    </a>
+
+                    <a href="{% url 'notifications' %}" class="nav-action-btn nav-action-outline nav-icon-btn">
+                        <span class="nav-btn-icon">🔔</span>
+                        <span>Bildirishnomalar</span>
                         {% if notification_count > 0 %}
-                            <span style="
-                                margin-left: 6px;
-                                display: inline-flex;
-                                align-items: center;
-                                justify-content: center;
-                                min-width: 22px;
-                                height: 22px;
-                                padding: 0 6px;
-                                border-radius: 999px;
-                                background: #ef4444;
-                                color: #ffffff;
-                                font-size: 12px;
-                                font-weight: 700;
-                            ">
-                                {{ notification_count }}
-                            </span>
+                            <span class="notif-badge">{{ notification_count }}</span>
                         {% endif %}
                     </a>
-                    <a href="{% url 'favorite_list' %}" class="btn btn-outline">Sevimlilar</a>
-                    <a href="{% url 'logout' %}" class="btn btn-outline">Chiqish</a>
-                    <a href="{% url 'create_listing' %}" class="btn btn-primary">E'lon berish</a>
+
+                    <a href="{% url 'favorite_list' %}" class="nav-action-btn nav-action-outline nav-icon-btn">
+                        <span class="nav-btn-icon">♡</span>
+                        <span>Sevimlilar</span>
+                    </a>
+
+                    <a href="{% url 'logout' %}" class="nav-action-btn nav-action-outline">
+                        Chiqish
+                    </a>
+
+                    <a href="{% url 'create_listing' %}" class="nav-action-btn nav-action-primary">
+                        E'lon berish
+                    </a>
                 {% else %}
-                    <a href="{% url 'login' %}" class="btn btn-outline">Kirish</a>
-                    <a href="{% url 'register' %}" class="btn btn-primary">Ro'yxatdan o'tish</a>
+                    <a href="{% url 'login' %}" class="nav-action-btn nav-action-outline">
+                        Kirish
+                    </a>
+
+                    <a href="{% url 'register' %}" class="nav-action-btn nav-action-primary">
+                        Ro'yxatdan o'tish
+                    </a>
                 {% endif %}
             </div>
 
         </div>
     </header>
 
-<!--MESSAGES-->
-{% if messages %}
-    <div class="container" style="margin-top: 20px;">
-        {% for message in messages %}
-            <div style="padding: 14px 18px; margin-bottom: 10px; border-radius: 10px; background: #eef7ff; color: #0f172a; border: 1px solid #cfe8ff;">
-                {{ message }}
-            </div>
-        {% endfor %}
-    </div>
-{% endif %}
-
-
+    {% if messages %}
+        <div class="container" style="margin-top: 20px;">
+            {% for message in messages %}
+                <div style="padding: 14px 18px; margin-bottom: 10px; border-radius: 10px; background: #eef7ff; color: #0f172a; border: 1px solid #cfe8ff;">
+                    {{ message }}
+                </div>
+            {% endfor %}
+        </div>
+    {% endif %}
 
     <!-- MAIN CONTENT -->
     <main>

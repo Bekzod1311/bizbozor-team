@@ -1,4 +1,24 @@
 /* Resetga yaqin boshlang'ich sozlamalar */
+:root {
+    --primary: #0f8fdd;
+    --primary-light: #22afff;
+    --dark: #0f172a;
+    --text: #334155;
+    --muted: #64748b;
+    --border: #e5e7eb;
+    --bg: #f8fafc;
+    --white: #ffffff;
+
+    --radius: 16px;
+}
+
+body {
+    background: var(--bg);
+    font-family: 'Inter', sans-serif;
+    color: var(--text);
+}
+
+
 * {
     margin: 0;
     padding: 0;
@@ -18,87 +38,208 @@ body {
     margin: 0 auto;
 }
 
-/* Header */
+/* Header Wow new?*/
+/* =========================
+   PREMIUM NAVBAR
+   ========================= */
+
 .site-header {
-    background-color: #ffffff;
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    background: rgba(255, 255, 255, 0.92);
+    backdrop-filter: blur(12px);
     border-bottom: 1px solid #e5e7eb;
-    padding: 18px 0;
 }
 
 .header-inner {
+    min-height: 88px;
     display: flex;
     align-items: center;
     justify-content: space-between;
-    gap: 20px;
+    gap: 24px;
 }
 
 .logo a {
     text-decoration: none;
     font-size: 28px;
-    font-weight: bold;
+    font-weight: 800;
+    letter-spacing: -0.5px;
     color: #0b1f4d;
 }
 
-/* Navbar */
 .main-nav {
     display: flex;
-    gap: 18px;
+    align-items: center;
+    gap: 28px;
+    flex: 1;
+    justify-content: center;
 }
 
-/* Default holat */
 .main-nav a {
     text-decoration: none;
-    color: #1f2937;
-    font-weight: 600;
-    transition: all 0.3s ease;
-}
-
-/* NAV ustiga hover bo‘lsa – hammasi xira */
-.main-nav:hover a {
-    opacity: 0.3;
-    filter: grayscale(100%);
-}
-
-/* Hover qilingan element – yana rangli */
-.main-nav a:hover {
-    opacity: 1;
-    filter: grayscale(0%);
-    color: #22afff;
-    transform: scale(1.1);
-}
-
-/* Tugmalar */
-.header-actions {
-    display: flex;
-    gap: 12px;
-}
-
-.btn {
-    text-decoration: none;
-    padding: 10px 16px;
-    border-radius: 8px;
-    font-weight: 600;
+    color: #0f172a;
+    font-weight: 700;
+    font-size: 16px;
+    position: relative;
     transition: 0.2s ease;
 }
 
-.btn-outline {
-    border: 1px solid #22afff;
-    color: #22afff;
-    background-color: transparent;
+.main-nav a::after {
+    content: "";
+    position: absolute;
+    left: 0;
+    bottom: -8px;
+    width: 0;
+    height: 2px;
+    background: #22afff;
+    border-radius: 999px;
+    transition: 0.25s ease;
 }
 
-.btn-outline:hover {
-    background-color: #22afff;
+.main-nav a:hover {
+    color: #1793e8;
+}
+
+.main-nav a:hover::after {
+    width: 100%;
+}
+
+.header-actions {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    flex-wrap: wrap;
+    justify-content: flex-end;
+}
+
+.user-chip {
+    display: inline-flex;
+    align-items: center;
+    padding: 10px 14px;
+    border-radius: 999px;
+    background: #f8fafc;
+    border: 1px solid #e5e7eb;
+    color: #0f172a;
+    font-weight: 700;
+    font-size: 14px;
+    white-space: nowrap;
+}
+
+.nav-action-btn {
+    position: relative;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    height: 46px;
+    padding: 0 18px;
+    border-radius: 999px;
+    text-decoration: none;
+    font-weight: 700;
+    font-size: 15px;
+    transition: all 0.2s ease;
+    white-space: nowrap;
+}
+
+.nav-action-outline {
+    background: #ffffff;
+    border: 1px solid #dbe5f0;
+    color: #0f172a;
+}
+
+.nav-action-outline:hover {
+    border-color: #bfe3ff;
+    background: #eef7ff;
+    color: #1793e8;
+    transform: translateY(-1px);
+}
+
+.nav-action-primary {
+    background: linear-gradient(135deg, #0f8fdd, #22afff);
     color: #ffffff;
+    border: 1px solid transparent;
+    box-shadow: 0 8px 20px rgba(34, 175, 255, 0.22);
+}
+
+.nav-action-primary:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 12px 24px rgba(34, 175, 255, 0.30);
+}
+
+.notif-badge {
+    margin-left: 8px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 22px;
+    height: 22px;
+    padding: 0 6px;
+    border-radius: 999px;
+    background: #ef4444;
+    color: #ffffff;
+    font-size: 12px;
+    font-weight: 800;
+    line-height: 1;
+}
+
+/* Responsive navbar */
+@media (max-width: 1200px) {
+    .header-inner {
+        flex-wrap: wrap;
+        padding: 14px 0;
+    }
+
+    .main-nav {
+        order: 3;
+        width: 100%;
+        justify-content: flex-start;
+        gap: 20px;
+        padding-top: 4px;
+    }
+
+    .header-actions {
+        margin-left: auto;
+    }
+}
+
+@media (max-width: 768px) {
+    .main-nav {
+        flex-wrap: wrap;
+        gap: 14px;
+    }
+
+    .header-actions {
+        width: 100%;
+        justify-content: flex-start;
+    }
+
+    .nav-action-btn,
+    .user-chip {
+        font-size: 14px;
+    }
+}
+
+.btn {
+    padding: 10px 16px;
+    border-radius: 999px;
+    font-weight: 600;
+    text-decoration: none;
+    transition: 0.2s ease;
 }
 
 .btn-primary {
-    background-color: #22afff;
-    color: #ffffff;
+    background: var(--primary);
+    color: white;
 }
 
 .btn-primary:hover {
-    background-color: #0f8fdd;
+    background: var(--primary-light);
+}
+
+.btn-outline {
+    border: 1px solid var(--border);
+    color: var(--text);
+    background: white;
 }
 
 /* =========================
@@ -128,17 +269,25 @@ body {
 }
 
 .business-card {
-    background: #ffffff;
-    border: 1px solid #e5e7eb;
-    border-radius: 18px;
+    background: var(--white);
+    border-radius: var(--radius);
     overflow: hidden;
-    transition: 0.25s ease;
-    box-shadow: 0 6px 18px rgba(15, 23, 42, 0.05);
+    border: 1px solid var(--border);
+    box-shadow: 0 8px 24px rgba(15, 23, 42, 0.04);
+    transition: 0.3s ease;
 }
 
 .business-card:hover {
     transform: translateY(-6px);
-    box-shadow: 0 14px 30px rgba(15, 23, 42, 0.12);
+    box-shadow: 0 16px 40px rgba(15, 23, 42, 0.08);
+}
+
+.business-card-image img {
+    transition: 0.4s ease;
+}
+
+.business-card:hover img {
+    transform: scale(1.05);
 }
 
 .business-card-image img {
@@ -248,7 +397,9 @@ body {
     }
 
     .business-grid {
-        grid-template-columns: 1fr;
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+        gap: 24px;
     }
 
     .business-card-image img,
@@ -256,6 +407,17 @@ body {
         height: 200px;
     }
 }
+
+/* Secret Sauce */
+
+a {
+    transition: 0.2s;
+}
+
+a:hover {
+    opacity: 0.8;
+}
+
 
 /* =========================
    DETAIL PAGE
@@ -363,13 +525,12 @@ body {
 
 
 .status-badge {
-    padding: 6px 12px;
+    padding: 6px 10px;
     border-radius: 999px;
-    font-size: 13px;
+    font-size: 12px;
     font-weight: 600;
 }
 
-/* status ranglari */
 .status-approved {
     background: #dcfce7;
     color: #166534;
@@ -378,6 +539,11 @@ body {
 .status-pending {
     background: #fef9c3;
     color: #854d0e;
+}
+
+.status-rejected {
+    background: #fee2e2;
+    color: #991b1b;
 }
 
 .status-inactive {
@@ -390,10 +556,7 @@ body {
     color: #5b21b6;
 }
 
-.status-rejected {
-    background: #fee2e2;
-    color: #b91c1c;
-}
+
 
 
 .form-card {
@@ -828,4 +991,83 @@ body {
     .dashboard-stats {
         grid-template-columns: 1fr;
     }
+}
+
+/* HERO SECTION */
+.hero {
+    background: linear-gradient(135deg, #0f8fdd, #22afff);
+    border-radius: 24px;
+    padding: 60px;
+    color: white;
+    margin-bottom: 40px;
+}
+
+.hero h1 {
+    font-size: 48px;
+    line-height: 1.15;
+    margin-bottom: 18px;
+    max-width: 900px;
+}
+
+.hero p {
+    font-size: 20px;
+    line-height: 1.7;
+    max-width: 760px;
+    opacity: 0.95;
+    margin-bottom: 28px;
+}
+
+.hero-actions {
+    display: flex;
+    gap: 14px;
+    flex-wrap: wrap;
+}
+
+.btn-light {
+    background: #ffffff;
+    color: #0f8fdd;
+    border: 1px solid #ffffff;
+}
+
+.btn-light:hover {
+    background: #f8fafc;
+    color: #0b79bd;
+}
+
+.user-chip-link {
+    text-decoration: none;
+    transition: all 0.2s ease;
+}
+
+.user-chip-link:hover {
+    background: #eef7ff;
+    border-color: #bfe3ff;
+    transform: translateY(-1px);
+}
+
+.user-chip-avatar {
+    width: 30px;
+    height: 30px;
+    border-radius: 999px;
+    background: linear-gradient(135deg, #0f8fdd, #22afff);
+    color: white;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 13px;
+    font-weight: 800;
+    margin-right: 8px;
+    flex-shrink: 0;
+}
+
+.nav-icon-btn {
+    gap: 8px;
+}
+
+.nav-btn-icon {
+    font-size: 16px;
+    line-height: 1;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
 }
