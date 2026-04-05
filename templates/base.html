@@ -30,7 +30,7 @@
             <!-- ACTIONS -->
             <div class="header-actions">
                 {% if request.user.is_authenticated %}
-                    <a href="#" class="user-chip user-chip-link">
+                    <a href="{% url 'profile' %}" class="user-chip user-chip-link">
                         <span class="user-chip-avatar">
                             {{ request.user.username|first|upper }}
                         </span>

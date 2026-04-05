@@ -1,7 +1,7 @@
 from django.contrib import admin
 from django.utils.html import format_html
 from django.utils import timezone
-from .models import Category, Region, District, Listing, ListingImage, Favorite, Notification
+from .models import Category, Region, District, Listing, ListingImage, Favorite, Notification, Profile
 
 
 # 🔥 INLINE IMAGE (gallery admin ichida ko‘rish uchun)
@@ -181,3 +181,9 @@ class FavoriteAdmin(admin.ModelAdmin):
 @admin.register(Notification)
 class NotificationAdmin(admin.ModelAdmin):
     list_display = ('user', 'message', 'is_read', 'created_at')
+
+
+# Profile
+@admin.register(Profile)
+class ProfileAdmin(admin.ModelAdmin):
+    list_display = ('user', 'phone', 'telegram_username')

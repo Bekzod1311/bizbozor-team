@@ -1,7 +1,7 @@
 from django.shortcuts import render, get_object_or_404, redirect
-from .models import Listing, ListingImage, Region, Category, Favorite, Notification
+from .models import Listing, ListingImage, Region, Category, Favorite, Notification, Profile
 from django.contrib.auth.decorators import login_required
-from .forms import ListingForm
+from .forms import ListingForm, ProfileForm
 from django.contrib import messages
 from django.utils import timezone
 from datetime import timedelta
@@ -416,3 +416,34 @@ def favorite_list_view(request):
         'favorites': favorites
     }
     return render(request, 'listings/favorite_list.html', context)
+
+
+@login_required
+def profile_view(request):
+    profile, created = Profile.objects.get_or_create(user=request.user)
+
+    user_listings = Listing.objects.filter(owner=request.user).order_by('-created_at')
+
+    context = {
+        'profile': profile,
+        'user_listings': user_listings,
+    }
+    return render(request, 'listings/profile.html', context)
+
+@login_required
+def edit_profile_view(request):
+    profile, created = Profile.objects.get_or_create(user=request.user)
+
+    if request.method == 'POST':
+        form = ProfileForm(request.POST, request.FILES, instance=profile)
+        if form.is_valid():
+            form.save()
+            messages.success(request, "Profil muvaffaqiyatli yangilandi.")
+            return redirect('profile')
+    else:
+        form = ProfileForm(instance=profile)
+
+    return render(request, 'listings/edit_profile.html', {
+        'form': form,
+        'profile': profile
+    })

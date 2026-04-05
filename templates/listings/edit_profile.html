@@ -1,0 +1,42 @@
+{% extends 'base.html' %}
+
+{% block title %}Profilni tahrirlash | BizBozor{% endblock %}
+
+{% block content %}
+<section class="page-section">
+    <div class="container" style="max-width: 700px;">
+        <div class="listing-form-card">
+            <h1 class="page-title">Profilni tahrirlash</h1>
+            <p class="page-subtitle">Profil ma'lumotlaringizni yangilang</p>
+
+            <form method="post" enctype="multipart/form-data">
+                {% csrf_token %}
+
+                <div class="form-group">
+                    <label>Avatar</label>
+                    {{ form.avatar }}
+                </div>
+
+                <div class="form-group">
+                    <label>Bio</label>
+                    {{ form.bio }}
+                </div>
+
+                <div class="form-group">
+                    <label>Telefon</label>
+                    {{ form.phone }}
+                </div>
+
+                <div class="form-group">
+                    <label>Telegram username</label>
+                    {{ form.telegram_username }}
+                </div>
+
+                <button type="submit" class="nav-action-btn nav-action-primary">
+                    Saqlash
+                </button>
+            </form>
+        </div>
+    </div>
+</section>
+{% endblock %}

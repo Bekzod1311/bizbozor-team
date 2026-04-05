@@ -11,6 +11,8 @@ from .views import (
     toggle_favorite_view,
     favorite_list_view,
     notification_list_view,
+    profile_view,
+    edit_profile_view,
 )
 
 urlpatterns = [
@@ -36,4 +38,7 @@ urlpatterns = [
     path('favorites/', favorite_list_view, name='favorite_list'),
     path('favorite/<slug:slug>/', toggle_favorite_view, name='toggle_favorite'),
     path('notifications/', notification_list_view, name='notifications'),
+
+    path('profile/', profile_view, name='profile'),
+    path('profile/edit/', edit_profile_view, name='edit_profile'),
 ]

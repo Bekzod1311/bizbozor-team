@@ -1,5 +1,5 @@
 from django import forms
-from .models import Listing
+from .models import Listing, Profile
 
 
 class ListingForm(forms.ModelForm):
@@ -84,3 +84,17 @@ class ListingForm(forms.ModelForm):
         if len(phone) < 9:
             raise forms.ValidationError("Telefon raqam to'g'ri kiritilmagan.")
         return phone
+    
+
+# Profile
+
+class ProfileForm(forms.ModelForm):
+    class Meta:
+        model = Profile
+        fields = ['avatar', 'bio', 'phone', 'telegram_username']
+        widgets = {
+            'bio': forms.Textarea(attrs={'class': 'form-control', 'placeholder': "O'zingiz haqingizda qisqacha yozing"}),
+            'phone': forms.TextInput(attrs={'class': 'form-control', 'placeholder': "+998901234567"}),
+            'telegram_username': forms.TextInput(attrs={'class': 'form-control', 'placeholder': "username"}),
+            'avatar': forms.ClearableFileInput(attrs={'class': 'form-control'}),
+        }
