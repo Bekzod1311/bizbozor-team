@@ -7,6 +7,7 @@ from django.utils import timezone
 from datetime import timedelta
 from django.db.models import Q, F
 from django.core.paginator import Paginator
+from django.contrib.auth.models import User
 
 
 def business_list_view(request):
@@ -447,3 +448,21 @@ def edit_profile_view(request):
         'form': form,
         'profile': profile
     })
+
+
+def public_profile_view(request, username):
+    seller = get_object_or_404(User, username=username)
+    seller_profile, created = Profile.objects.get_or_create(user=seller)
+
+    seller_listings = Listing.objects.filter(
+        owner=seller,
+        status='approved'
+    ).order_by('-created_at')
+
+    context = {
+        'seller': seller,
+        'seller_profile': seller_profile,
+        'seller_listings': seller_listings,
+    }
+
+    return render(request, 'listings/public_profile.html', context)

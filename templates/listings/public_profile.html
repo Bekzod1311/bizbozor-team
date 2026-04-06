@@ -1,0 +1,109 @@
+{% extends 'base.html' %}
+{% load humanize %}
+
+{% block title %}{{ seller.username }} | BizBozor{% endblock %}
+
+{% block content %}
+<section class="page-section">
+    <div class="container">
+
+        <div class="listing-form-card" style="max-width: 1100px; margin: 0 auto;">
+
+            <div style="display: flex; gap: 24px; align-items: center; flex-wrap: wrap; margin-bottom: 28px;">
+                {% if seller_profile.avatar %}
+                    <img src="{{ seller_profile.avatar.url }}" alt="{{ seller.username }}"
+                         style="width: 110px; height: 110px; border-radius: 999px; object-fit: cover; border: 3px solid #e5e7eb;">
+                {% else %}
+                    <div style="width: 110px; height: 110px; border-radius: 999px; background: linear-gradient(135deg, #0f8fdd, #22afff); color: white; display:flex; align-items:center; justify-content:center; font-size: 38px; font-weight: 800;">
+                        {{ seller.username|first|upper }}
+                    </div>
+                {% endif %}
+
+                <div>
+                    <h1 class="page-title" style="margin-bottom: 8px;">{{ seller.username }}</h1>
+
+                    {% if seller_profile.bio %}
+                        <p class="page-subtitle" style="margin-bottom: 8px;">
+                            {{ seller_profile.bio }}
+                        </p>
+                    {% else %}
+                        <p class="page-subtitle" style="margin-bottom: 8px;">
+                            Foydalanuvchi o‘zi haqida ma’lumot qoldirmagan.
+                        </p>
+                    {% endif %}
+
+                    {% if seller_profile.phone %}
+                        <p class="detail-meta">
+                            <strong>Telefon:</strong> {{ seller_profile.phone }}
+                        </p>
+                    {% endif %}
+
+                    {% if seller_profile.telegram_username %}
+                        <p class="detail-meta">
+                            <strong>Telegram:</strong>
+                            <a href="https://t.me/{{ seller_profile.telegram_username }}" target="_blank">
+                                @{{ seller_profile.telegram_username }}
+                            </a>
+                        </p>
+                    {% endif %}
+                </div>
+            </div>
+
+            <hr style="border: none; border-top: 1px solid #e5e7eb; margin: 24px 0;">
+
+            <h2 class="page-title" style="font-size: 28px;">Sellerning e'lonlari</h2>
+            <p class="page-subtitle">Ushbu foydalanuvchi joylashtirgan barcha faol e’lonlar</p>
+
+            {% if seller_listings %}
+                <div class="business-grid">
+                    {% for listing in seller_listings %}
+                        <div class="business-card">
+                            <div class="business-card-image">
+                                <a href="{% url 'business_detail' listing.slug %}">
+                                    {% if listing.main_image %}
+                                        <img src="{{ listing.main_image.url }}" alt="{{ listing.title }}">
+                                    {% else %}
+                                        <div class="placeholder-image">BizBozor</div>
+                                    {% endif %}
+                                </a>
+                            </div>
+
+                            <div class="business-card-body">
+                                <h2 class="business-card-title">
+                                    <a href="{% url 'business_detail' listing.slug %}">
+                                        {{ listing.title }}
+                                    </a>
+                                </h2>
+
+                                <p class="business-card-price">
+                                    {{ listing.price|intcomma }} so'm
+                                </p>
+
+                                <p class="business-card-desc">
+                                    {{ listing.short_description }}
+                                </p>
+
+                                <p class="business-card-meta">
+                                    👁 {{ listing.view_count }} marta ko‘rilgan
+                                </p>
+
+                                <div class="business-card-footer">
+                                    <span class="status-badge status-approved">
+                                        {{ listing.get_status_display }}
+                                    </span>
+                                    <a href="{% url 'business_detail' listing.slug %}" class="detail-btn">
+                                        Batafsil
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                    {% endfor %}
+                </div>
+            {% else %}
+                <p>Bu foydalanuvchida hozircha faol e’lonlar yo‘q.</p>
+            {% endif %}
+        </div>
+
+    </div>
+</section>
+{% endblock %}

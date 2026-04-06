@@ -13,6 +13,7 @@ from .views import (
     notification_list_view,
     profile_view,
     edit_profile_view,
+    public_profile_view,
 )
 
 urlpatterns = [
@@ -41,4 +42,5 @@ urlpatterns = [
 
     path('profile/', profile_view, name='profile'),
     path('profile/edit/', edit_profile_view, name='edit_profile'),
+    path('seller/<str:username>/', public_profile_view, name='public_profile'),
 ]

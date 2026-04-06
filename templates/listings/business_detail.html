@@ -80,6 +80,32 @@
                         </a>
                     </p>
                 {% endif %}
+                
+                <a href="{% url 'public_profile' listing.owner.username %}" class="seller-box-link">
+                    <div class="seller-box seller-box-inline">
+                        <div class="seller-box-top">
+                            <span class="seller-box-label-inline">E'lon egasi:</span>
+                            <span class="seller-box-name-inline">{{ listing.owner.username }}</span>
+
+                            {% if seller_profile.avatar %}
+                                <img src="{{ seller_profile.avatar.url }}"
+                                    alt="{{ listing.owner.username }}"
+                                    class="seller-box-avatar-inline">
+                            {% else %}
+                                <div class="seller-box-avatar-inline seller-box-avatar-placeholder-inline">
+                                    {{ listing.owner.username|first|upper }}
+                                </div>
+                            {% endif %}
+                        </div>
+
+                        {% if seller_profile.bio %}
+                            <div class="seller-box-bio-inline">
+                                {{ seller_profile.bio }}
+                            </div>
+                        {% endif %}
+                    </div>
+                </a>
+
 
                 <!-- ACTIONS -->
                 <div class="detail-actions">
