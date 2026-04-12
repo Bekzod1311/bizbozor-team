@@ -268,3 +268,36 @@ class Profile(models.Model):
 
     def __str__(self):
         return self.user.username
+    
+class AuditLog(models.Model):
+    ACTION_CHOICES = [
+        ('created', 'Created'),
+        ('updated', 'Updated'),
+        ('approved', 'Approved'),
+        ('rejected', 'Rejected'),
+        ('pending', 'Pending'),
+        ('inactive', 'Inactive'),
+        ('delete_requested', 'Delete Requested'),
+        ('deleted', 'Deleted'),
+    ]
+
+    listing = models.ForeignKey(
+        'Listing',
+        on_delete=models.CASCADE,
+        related_name='audit_logs'
+    )
+    actor = models.ForeignKey(
+        User,
+        on_delete=models.SET_NULL,
+        null=True,
+        blank=True,
+        related_name='audit_actions'
+    )
+    action = models.CharField(max_length=30, choices=ACTION_CHOICES)
+    old_status = models.CharField(max_length=30, blank=True, null=True)
+    new_status = models.CharField(max_length=30, blank=True, null=True)
+    note = models.TextField(blank=True, null=True)
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return f"{self.listing.title} - {self.action} - {self.created_at:%Y-%m-%d %H:%M}"

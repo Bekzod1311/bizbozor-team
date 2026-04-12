@@ -1,7 +1,7 @@
 from django.contrib import admin
 from django.utils.html import format_html
 from django.utils import timezone
-from .models import Category, Region, District, Listing, ListingImage, Favorite, Notification, Profile
+from .models import Category, Region, District, Listing, ListingImage, Favorite, Notification, Profile, AuditLog
 
 
 # 🔥 INLINE IMAGE (gallery admin ichida ko‘rish uchun)
@@ -27,6 +27,14 @@ class RegionAdmin(admin.ModelAdmin):
 @admin.register(District)
 class DistrictAdmin(admin.ModelAdmin):
     list_display = ('id', 'name_uz', 'region')
+
+
+class AuditLogInline(admin.TabularInline):
+    model = AuditLog
+    extra = 0
+    readonly_fields = ('actor', 'action', 'old_status', 'new_status', 'note', 'created_at')
+    can_delete = False
+    ordering = ('-created_at',)
 
 
 # 🔥 MAIN LISTING ADMIN (ENG MUHIM)
@@ -94,7 +102,7 @@ class ListingAdmin(admin.ModelAdmin):
 
     list_per_page = 20
 
-    inlines = [ListingImageInline]
+    inlines = [ListingImageInline, AuditLogInline]
 
     # 🔥 IKKITA ACTION
     actions = ['make_approved', 'make_pending', 'make_rejected']
@@ -119,6 +127,7 @@ class ListingAdmin(admin.ModelAdmin):
     # 🔥 APPROVE (notification bilan)
     def make_approved(self, request, queryset):
         for listing in queryset:
+            old_status = listing.status
             listing.status = 'approved'
             listing.approved_at = timezone.now()
             listing.approved_by = request.user
@@ -130,13 +139,22 @@ class ListingAdmin(admin.ModelAdmin):
                 message=f'"{listing.title}" e\'loningiz tasdiqlandi.'
             )
 
-        self.message_user(request, "Tanlangan e'lonlar tasdiqlandi.")
+            AuditLog.objects.create(
+                listing=listing,
+                actor=request.user,
+                action='approved',
+                old_status=old_status,
+                new_status='approved',
+                note="Admin tomonidan tasdiqlandi."
+            )
 
+        self.message_user(request, "Tanlangan e'lonlar tasdiqlandi.")
     make_approved.short_description = "Tanlanganlarni tasdiqlash"
 
     # 🔥 PENDING / REJECT
     def make_pending(self, request, queryset):
         for listing in queryset:
+            old_status = listing.status
             listing.status = 'pending'
             listing.save()
 
@@ -145,12 +163,22 @@ class ListingAdmin(admin.ModelAdmin):
                 message=f'"{listing.title}" e\'loningiz ko‘rib chiqish holatiga qaytarildi.'
             )
 
-        self.message_user(request, "Tanlangan e'lonlar pending holatga qaytarildi.")
+            AuditLog.objects.create(
+                listing=listing,
+                actor=request.user,
+                action='pending',
+                old_status=old_status,
+                new_status='pending',
+                note="Admin tomonidan pending holatga qaytarildi."
+            )
 
+        self.message_user(request, "Tanlangan e'lonlar pending holatga qaytarildi.")
     make_pending.short_description = "Tanlanganlarni pending qilish"
 
     def make_rejected(self, request, queryset):
         for listing in queryset:
+            old_status = listing.status
+
             listing.status = 'rejected'
             if not listing.rejection_reason:
                 listing.rejection_reason = "E'lon moderatsiyadan o'tmadi."
@@ -159,6 +187,15 @@ class ListingAdmin(admin.ModelAdmin):
             Notification.objects.create(
                 user=listing.owner,
                 message=f'"{listing.title}" e\'loningiz rad etildi.'
+            )
+
+            AuditLog.objects.create(      # 👈 SAVE dan KEYIN
+                listing=listing,
+                actor=request.user,
+                action='rejected',
+                old_status=old_status,
+                new_status='rejected',
+                note=f"Admin tomonidan rad etildi. Sabab: {listing.rejection_reason}"
             )
 
         self.message_user(request, "Tanlangan e'lonlar rad etildi.")
@@ -187,3 +224,21 @@ class NotificationAdmin(admin.ModelAdmin):
 @admin.register(Profile)
 class ProfileAdmin(admin.ModelAdmin):
     list_display = ('user', 'phone', 'telegram_username')
+
+@admin.register(AuditLog)
+class AuditLogAdmin(admin.ModelAdmin):
+    list_display = (
+        'id',
+        'listing',
+        'actor',
+        'action',
+        'old_status',
+        'new_status',
+        'created_at',
+    )
+    list_filter = ('action', 'old_status', 'new_status', 'created_at')
+    search_fields = ('listing__title', 'actor__username', 'note')
+    ordering = ('-created_at',)
+    list_per_page = 30
+
+

@@ -1,5 +1,5 @@
 from django.shortcuts import render, get_object_or_404, redirect
-from .models import Listing, ListingImage, Region, Category, Favorite, Notification, Profile
+from .models import Listing, ListingImage, Region, Category, Favorite, Notification, Profile, AuditLog
 from django.contrib.auth.decorators import login_required
 from .forms import ListingForm, ProfileForm
 from django.contrib import messages
@@ -107,6 +107,15 @@ def create_listing_view(request):
             listing.status = 'pending'
             listing.save()
 
+            create_audit_log(
+                listing=listing,
+                actor=request.user,
+                action='created',
+                old_status=None,
+                new_status=listing.status,
+                note="User tomonidan yangi e'lon yaratildi."
+            )
+
             Notification.objects.create(
                 user=request.user,
                 message="E'loningiz muvaffaqiyatli yuborildi va ko‘rib chiqilmoqda."
@@ -209,12 +218,23 @@ def edit_listing_view(request, slug):
     listing = get_object_or_404(Listing, slug=slug, owner=request.user)
 
     if request.method == 'POST':
+        old_status = listing.status
+        
         form = ListingForm(request.POST, request.FILES, instance=listing)
 
         if form.is_valid():
             edited_listing = form.save(commit=False)
             edited_listing.owner = request.user
             edited_listing.save()
+
+            create_audit_log(        # 👈 SAVE dan KEYIN
+                listing=edited_listing,
+                actor=request.user,
+                action='updated',
+                old_status=old_status,
+                new_status=edited_listing.status,
+                note="User e'lonni tahrirladi."
+            )
 
             Notification.objects.create(
                 user=request.user,
@@ -269,8 +289,20 @@ def deactivate_listing_view(request, slug):
     """
     listing = get_object_or_404(Listing, slug=slug, owner=request.user)
 
-    listing.status = 'inactive'
-    listing.save()
+    if listing.status == 'approved':
+        old_status = listing.status   # 👈 SHU YERGA
+
+        listing.status = 'inactive'
+        listing.save()
+
+        create_audit_log(             # 👈 SAVE dan KEYIN
+            listing=listing,
+            actor=request.user,
+            action='inactive',
+            old_status=old_status,
+            new_status='inactive',
+            note="User e'lonni faol emas holatga o'tkazdi."
+        )
 
     Notification.objects.create(
         user=request.user,
@@ -289,9 +321,21 @@ def request_delete_listing_view(request, slug):
     listing = get_object_or_404(Listing, slug=slug, owner=request.user)
 
     if listing.status == 'inactive':
+        old_status = listing.status
+
         listing.status = 'delete_requested'
         listing.delete_requested_at = timezone.now()
         listing.save()
+
+        create_audit_log(             # 👈 SAVE dan KEYIN
+            listing=listing,
+            actor=request.user,
+            action='delete_requested',
+            old_status=old_status,
+            new_status='delete_requested',
+            note="User e'lonni o‘chirish so‘rovini yubordi."
+        )
+
         Notification.objects.create(
             user=request.user,
             message="E'lon faol emas holatga o‘tkazildi."
@@ -466,3 +510,14 @@ def public_profile_view(request, username):
     }
 
     return render(request, 'listings/public_profile.html', context)
+
+
+def create_audit_log(listing, actor, action, old_status=None, new_status=None, note=None):
+    AuditLog.objects.create(
+        listing=listing,
+        actor=actor,
+        action=action,
+        old_status=old_status,
+        new_status=new_status,
+        note=note
+    )
