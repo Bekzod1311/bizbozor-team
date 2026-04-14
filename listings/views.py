@@ -9,6 +9,44 @@ from django.db.models import Q, F
 from django.core.paginator import Paginator
 from django.contrib.auth.models import User
 from django.contrib.admin.views.decorators import staff_member_required
+import re
+
+BAD_WORDS = [
+    'sex', 'porn', 'xxx', 'nude',
+    'fuck', 'shit', 'bitch',
+    'казино', 'ставка'
+]
+
+SPAM_PATTERNS = [
+    r'http[s]?://',
+    r'www\.',
+    r't\.me/',
+    r'@\w+',
+]
+
+
+def check_listing_content(title, description):
+    text = f"{title} {description}".lower()
+
+    # 🔴 BAD WORDS → reject
+    for word in BAD_WORDS:
+        if word in text:
+            return 'reject', f"Ruxsat etilmagan so‘z: {word}"
+
+    # 🔴 SPAM → reject
+    for pattern in SPAM_PATTERNS:
+        if re.search(pattern, text):
+            return 'reject', "Spam yoki tashqi link aniqlangan"
+
+    # ⚠️ juda qisqa → pending
+    if len(description.strip()) < 20:
+        return 'pending', "Tavsif juda qisqa"
+
+    # ⚠️ juda ko‘p katta harf
+    if description.isupper():
+        return 'pending', "Tavsif noto‘g‘ri formatda"
+
+    return 'ok', None
 
 
 def business_list_view(request):
@@ -103,10 +141,29 @@ def create_listing_view(request):
         form = ListingForm(request.POST, request.FILES)
 
         if form.is_valid():
+            title = form.cleaned_data.get('title')
+            description = form.cleaned_data.get('description')
+
+            status, reason = check_listing_content(title, description)
+
+            if status == 'reject':
+                messages.error(request, reason)
+                return redirect('create_listing')
+
             listing = form.save(commit=False)
             listing.owner = request.user
-            listing.status = 'pending'
+
+            if status == 'pending':
+                listing.status = 'pending'
+            else:
+                listing.status = 'pending'   # MVP: hammasi pendingga tushadi
             listing.save()
+
+            if status == 'pending':
+                Notification.objects.create(
+                    user=request.user,
+                    message="E'loningiz tekshiruvga yuborildi."
+                )
 
             create_audit_log(
                 listing=listing,
@@ -114,7 +171,7 @@ def create_listing_view(request):
                 action='created',
                 old_status=None,
                 new_status=listing.status,
-                note="User tomonidan yangi e'lon yaratildi."
+                note="AI filter orqali tekshirildi"
             )
 
             Notification.objects.create(
