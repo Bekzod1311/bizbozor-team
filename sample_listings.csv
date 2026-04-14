@@ -1,0 +1,3 @@
+category_slug,region_id,district_id,title,price,short_description,description,phone,telegram_username,google_maps_link,status,owner_username
+tayyor-biznes,1,1,Tayyor kafe sotiladi,120000000,Yaxshi joydagi tayyor kafe,Shahar markazida joylashgan va doimiy mijozlari bor tayyor kafe,+998901234567,admin,https://maps.google.com,approved,admin
+xizmat,1,1,SMM agentlik xizmati,5000000,Professional SMM xizmati,Bizneslar uchun ijtimoiy tarmoqlarda yuritish va reklama xizmatlari,+998901234568,smm_admin,https://maps.google.com,approved,admin
