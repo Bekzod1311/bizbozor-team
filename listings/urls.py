@@ -14,6 +14,9 @@ from .views import (
     profile_view,
     edit_profile_view,
     public_profile_view,
+    moderation_queue_view,
+    approve_listing_view,
+    reject_listing_view,
 )
 
 urlpatterns = [
@@ -43,4 +46,7 @@ urlpatterns = [
     path('profile/', profile_view, name='profile'),
     path('profile/edit/', edit_profile_view, name='edit_profile'),
     path('seller/<str:username>/', public_profile_view, name='public_profile'),
+    path('moderation/', moderation_queue_view, name='moderation_queue'),
+    path('moderation/approve/<slug:slug>/', approve_listing_view, name='approve_listing'),
+    path('moderation/reject/<slug:slug>/', reject_listing_view, name='reject_listing'),
 ]

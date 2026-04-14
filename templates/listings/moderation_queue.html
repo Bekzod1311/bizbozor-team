@@ -1,0 +1,50 @@
+{% extends 'base.html' %}
+{% load humanize %}
+
+{% block title %}Moderation | BizBozor{% endblock %}
+
+{% block content %}
+<section class="page-section">
+    <div class="container">
+
+        <h1 class="page-title">Moderation Queue</h1>
+        <p class="page-subtitle">Kutilayotgan e'lonlar</p>
+
+        {% if pending_listings %}
+            <div class="business-grid">
+                {% for listing in pending_listings %}
+                    <div class="business-card">
+
+                        <div class="business-card-image">
+                            <a href="{% url 'business_detail' listing.slug %}">
+                                {% if listing.main_image %}
+                                    <img src="{{ listing.main_image.url }}">
+                                {% endif %}
+                            </a>
+                        </div>
+
+                        <div class="business-card-body">
+                            <h2>{{ listing.title }}</h2>
+                            <p>{{ listing.price|intcomma }} so'm</p>
+
+                            <div style="display:flex; gap:10px; margin-top:10px;">
+                                <a href="{% url 'approve_listing' listing.slug %}" class="btn btn-primary">
+                                    ✅ Approve
+                                </a>
+
+                                <a href="{% url 'reject_listing' listing.slug %}" class="btn btn-outline">
+                                    ❌ Reject
+                                </a>
+                            </div>
+                        </div>
+
+                    </div>
+                {% endfor %}
+            </div>
+        {% else %}
+            <p>Hozircha pending e'lonlar yo‘q</p>
+        {% endif %}
+
+    </div>
+</section>
+{% endblock %}

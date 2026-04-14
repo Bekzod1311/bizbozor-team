@@ -49,6 +49,12 @@
                         {% endif %}
                     </a>
 
+                    {% if request.user.is_staff %}
+                        <a href="{% url 'moderation_queue' %}" class="nav-action-btn nav-action-outline">
+                            🛠 Moderation
+                        </a>
+                    {% endif %}
+
                     <a href="{% url 'favorite_list' %}" class="nav-action-btn nav-action-outline nav-icon-btn">
                         <span class="nav-btn-icon">♡</span>
                         <span>Sevimlilar</span>

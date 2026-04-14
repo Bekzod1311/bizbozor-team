@@ -8,6 +8,7 @@ from datetime import timedelta
 from django.db.models import Q, F
 from django.core.paginator import Paginator
 from django.contrib.auth.models import User
+from django.contrib.admin.views.decorators import staff_member_required
 
 
 def business_list_view(request):
@@ -521,3 +522,55 @@ def create_audit_log(listing, actor, action, old_status=None, new_status=None, n
         new_status=new_status,
         note=note
     )
+
+
+@staff_member_required
+def moderation_queue_view(request):
+    pending_listings = Listing.objects.filter(status='pending').order_by('-created_at')
+
+    context = {
+        'pending_listings': pending_listings
+    }
+    return render(request, 'listings/moderation_queue.html', context)
+
+@staff_member_required
+def approve_listing_view(request, slug):
+    listing = get_object_or_404(Listing, slug=slug)
+
+    old_status = listing.status
+    listing.status = 'approved'
+    listing.save()
+
+    create_audit_log(
+        listing=listing,
+        actor=request.user,
+        action='approved',
+        old_status=old_status,
+        new_status='approved',
+        note="Moderation queue orqali tasdiqlandi"
+    )
+
+    messages.success(request, "E'lon tasdiqlandi")
+    return redirect('moderation_queue')
+
+
+@staff_member_required
+def reject_listing_view(request, slug):
+    listing = get_object_or_404(Listing, slug=slug)
+
+    old_status = listing.status
+    listing.status = 'rejected'
+    listing.rejection_reason = "Moderation orqali rad etildi"
+    listing.save()
+
+    create_audit_log(
+        listing=listing,
+        actor=request.user,
+        action='rejected',
+        old_status=old_status,
+        new_status='rejected',
+        note="Moderation queue orqali rad etildi"
+    )
+
+    messages.warning(request, "E'lon rad etildi")
+    return redirect('moderation_queue')
