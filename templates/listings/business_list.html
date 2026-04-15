@@ -6,36 +6,50 @@
 {% block content %}
 <section class="page-section">
     <div class="container">
-        <h1 class="page-title">{{ current_category.name_uz|capfirst }}</h1>
+        <h1 class="page-title">{{ current_category.name_uz }}</h1>
         <p class="page-subtitle">
-            {{ current_category.name_uz|capfirst }} bo‘yicha tasdiqlangan e'lonlar ro'yxati
+            {{ current_category.name_uz }} bo‘yicha tasdiqlangan e'lonlar ro‘yxati
         </p>
 
-        <form method="get" style="margin-bottom: 20px; display: flex; gap: 10px; flex-wrap: wrap;">
-            <input type="text" name="q" placeholder="Qidiruv..."
-                   value="{{ request.GET.q }}">
+        <form method="get" class="listing-filter-bar">
+            <input
+                type="text"
+                name="q"
+                value="{{ query }}"
+                placeholder="Qidiruv..."
+                class="filter-input"
+            >
 
-            <select name="region">
+            <select name="region" class="filter-input">
                 <option value="">Barcha hududlar</option>
                 {% for region in regions %}
-                    <option value="{{ region.id }}"
-                        {% if request.GET.region == region.id|stringformat:"s" %}selected{% endif %}>
+                    <option value="{{ region.id }}" {% if region_id == region.id|stringformat:"s" %}selected{% endif %}>
                         {{ region.name_uz }}
                     </option>
                 {% endfor %}
             </select>
 
-            <input type="number" name="min_price" placeholder="Min narx"
-                   value="{{ request.GET.min_price }}">
+            <input
+                type="number"
+                name="min_price"
+                value="{{ min_price }}"
+                placeholder="Min narx"
+                class="filter-input"
+            >
 
-            <input type="number" name="max_price" placeholder="Max narx"
-                   value="{{ request.GET.max_price }}">
+            <input
+                type="number"
+                name="max_price"
+                value="{{ max_price }}"
+                placeholder="Max narx"
+                class="filter-input"
+            >
 
-            <select name="sort">
+            <select name="sort" class="filter-input">
                 <option value="">Eng yangi</option>
-                <option value="oldest" {% if request.GET.sort == 'oldest' %}selected{% endif %}>Eng eski</option>
-                <option value="price_low" {% if request.GET.sort == 'price_low' %}selected{% endif %}>Eng arzon</option>
-                <option value="price_high" {% if request.GET.sort == 'price_high' %}selected{% endif %}>Eng qimmat</option>
+                <option value="oldest" {% if sort == 'oldest' %}selected{% endif %}>Eng eski</option>
+                <option value="price_low" {% if sort == 'price_low' %}selected{% endif %}>Narx: arzon → qimmat</option>
+                <option value="price_high" {% if sort == 'price_high' %}selected{% endif %}>Narx: qimmat → arzon</option>
             </select>
 
             <button type="submit" class="btn btn-primary">Qidirish</button>
@@ -84,15 +98,34 @@
                             </p>
 
                             <div class="business-card-footer">
-                                <span class="status-badge">{{ listing.get_status_display }}</span>
-                                <a href="{% url 'business_detail' listing.slug %}" class="detail-btn">
-                                    Batafsil
-                                </a>
+                                <span class="status-badge status-approved">{{ listing.get_status_display }}</span>
+
+                                {% if listing.slug %}
+                                    <a href="{% url 'business_detail' listing.slug %}" class="detail-btn">Batafsil</a>
+                                {% else %}
+                                    <span class="detail-btn" style="opacity: 0.5; pointer-events: none;">Batafsil</span>
+                                {% endif %}
                             </div>
                         </div>
 
                     </div>
                 {% endfor %}
+            </div>
+
+            <div class="pagination">
+                {% if listings.has_previous %}
+                    <a href="?page={{ listings.previous_page_number }}&q={{ query }}&region={{ region_id }}&min_price={{ min_price }}&max_price={{ max_price }}&sort={{ sort }}">
+                        Oldingi
+                    </a>
+                {% endif %}
+
+                <span>Sahifa {{ listings.number }} / {{ listings.paginator.num_pages }}</span>
+
+                {% if listings.has_next %}
+                    <a href="?page={{ listings.next_page_number }}&q={{ query }}&region={{ region_id }}&min_price={{ min_price }}&max_price={{ max_price }}&sort={{ sort }}">
+                        Keyingi
+                    </a>
+                {% endif %}
             </div>
 
             <div style="margin-top: 30px; display: flex; gap: 10px; align-items: center; flex-wrap: wrap;">

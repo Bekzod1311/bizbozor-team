@@ -431,38 +431,45 @@ def delete_listing_view(request, slug):
 
 
 def category_list_view(request, category_slug):
-    """
-    Kategoriya bo'yicha listinglar ro'yxati:
-    tayyor-biznes, franshiza, startap, xizmat
-    """
     category = get_object_or_404(Category, slug=category_slug)
 
     listings = Listing.objects.filter(
-        status='approved',
-        category=category
-    )
+        category=category,
+        status='approved'
+    ).select_related('region', 'district', 'owner').order_by('-created_at')
 
-    query = request.GET.get('q')
-    region_id = request.GET.get('region')
-    min_price = request.GET.get('min_price')
-    max_price = request.GET.get('max_price')
-    sort = request.GET.get('sort')
+    query = request.GET.get('q', '').strip()
+    region_id = request.GET.get('region', '').strip()
+    min_price = request.GET.get('min_price', '').strip()
+    max_price = request.GET.get('max_price', '').strip()
+    sort = request.GET.get('sort', '').strip()
 
+    # Search
     if query:
         listings = listings.filter(
             Q(title__icontains=query) |
+            Q(short_description__icontains=query) |
             Q(description__icontains=query)
         )
 
+    # Region filter
     if region_id:
         listings = listings.filter(region_id=region_id)
 
+    # Price filters
     if min_price:
-        listings = listings.filter(price__gte=min_price)
+        try:
+            listings = listings.filter(price__gte=int(min_price))
+        except ValueError:
+            pass
 
     if max_price:
-        listings = listings.filter(price__lte=max_price)
+        try:
+            listings = listings.filter(price__lte=int(max_price))
+        except ValueError:
+            pass
 
+    # Sorting
     if sort == 'oldest':
         listings = listings.order_by('created_at')
     elif sort == 'price_low':
@@ -472,20 +479,23 @@ def category_list_view(request, category_slug):
     else:
         listings = listings.order_by('-created_at')
 
-    regions = Region.objects.all()
+    regions = Region.objects.all().order_by('name_uz')
 
-    paginator = Paginator(listings, 6)
+    paginator = Paginator(listings, 9)
     page_number = request.GET.get('page')
     page_obj = paginator.get_page(page_number)
 
     context = {
+        'current_category': category,
         'listings': page_obj,
         'regions': regions,
-        'current_category': category,
+        'query': query,
+        'region_id': region_id,
+        'min_price': min_price,
+        'max_price': max_price,
+        'sort': sort,
     }
-
     return render(request, 'listings/business_list.html', context)
-
 
 @login_required
 def toggle_favorite_view(request, slug):
