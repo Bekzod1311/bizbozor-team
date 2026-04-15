@@ -1162,6 +1162,14 @@ a:hover {
     align-items: center;
 }
 
+.listing-filter-bar {
+    background: #f8fafc;
+    padding: 16px;
+    border-radius: 16px;
+    margin-bottom: 24px;
+}
+
+
 .filter-input {
     height: 46px;
     padding: 0 14px;

@@ -495,6 +495,9 @@ def category_list_view(request, category_slug):
         'max_price': max_price,
         'sort': sort,
     }
+    if request.headers.get('x-requested-with') == 'XMLHttpRequest':
+        return render(request, 'listings/partials/listing_results.html', context)
+
     return render(request, 'listings/business_list.html', context)
 
 @login_required

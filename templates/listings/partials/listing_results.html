@@ -1,0 +1,67 @@
+<p style="margin-bottom:20px; color:#64748b;">
+    {{ listings.paginator.count }} ta e'lon topildi
+</p>
+{% if listings %}
+    <div class="business-grid">
+        {% for listing in listings %}
+            <div class="business-card">
+                <div class="business-card-image">
+                    {% if listing.main_image %}
+                        <img src="{{ listing.main_image.url }}" alt="{{ listing.title }}">
+                    {% endif %}
+                </div>
+
+                <div class="business-card-body">
+                    <h2 class="business-card-title">{{ listing.title }}</h2>
+
+                    <p class="business-card-price">
+                        {{ listing.price }} so'm
+                    </p>
+
+                    <p class="business-card-desc">
+                        {{ listing.short_description }}
+                    </p>
+
+                    <p class="business-card-meta">
+                        <strong>Hudud:</strong>
+                        {% if listing.region %}{{ listing.region.name_uz }}{% endif %}
+                        {% if listing.district %} / {{ listing.district.name_uz }}{% endif %}
+                    </p>
+
+                    <div class="business-card-footer">
+                        <span class="status-badge status-approved">
+                            {{ listing.get_status_display }}
+                        </span>
+
+                        {% if listing.slug %}
+                            <a href="{% url 'business_detail' listing.slug %}" class="detail-btn">Batafsil</a>
+                        {% else %}
+                            <span class="detail-btn" style="opacity: 0.5; pointer-events: none;">Batafsil</span>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+        {% endfor %}
+    </div>
+
+    <div class="pagination">
+        {% if listings.has_previous %}
+            <a href="?page={{ listings.previous_page_number }}&q={{ query }}&region={{ region_id }}&min_price={{ min_price }}&max_price={{ max_price }}&sort={{ sort }}">
+                Oldingi
+            </a>
+        {% endif %}
+
+        <span>Sahifa {{ listings.number }} / {{ listings.paginator.num_pages }}</span>
+
+        {% if listings.has_next %}
+            <a href="?page={{ listings.next_page_number }}&q={{ query }}&region={{ region_id }}&min_price={{ min_price }}&max_price={{ max_price }}&sort={{ sort }}">
+                Keyingi
+            </a>
+        {% endif %}
+    </div>
+{% else %}
+    <div style="text-align:center; padding:60px 0;">
+        <h3>Hech narsa topilmadi 😔</h3>
+        <p>Filterlarni o‘zgartirib ko‘ring</p>
+    </div>
+{% endif %}
