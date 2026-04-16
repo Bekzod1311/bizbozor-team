@@ -167,6 +167,7 @@ class Listing(models.Model):
     )
 
     is_featured = models.BooleanField(default=False, verbose_name="Featured e'lonmi?")
+    featured_until = models.DateTimeField(null=True, blank=True, verbose_name="TOP muddati")
 
     status = models.CharField(
         max_length=20,

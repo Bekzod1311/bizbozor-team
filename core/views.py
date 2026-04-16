@@ -1,10 +1,12 @@
 from django.shortcuts import render
 from listings.models import Listing, Category
+from django.utils import timezone
 
 def home_view(request):
     featured_listings = Listing.objects.filter(
         status='approved',
-        is_featured=True
+        is_featured=True,
+        featured_until__gte=timezone.now()
     ).order_by('-created_at')[:6]
 
     popular_listings = Listing.objects.filter(

@@ -18,6 +18,8 @@ from .views import (
     approve_listing_view,
     reject_listing_view,
     make_listing_featured_view,
+    payment_page_view,
+    confirm_payment_view,
 )
 
 urlpatterns = [
@@ -51,4 +53,6 @@ urlpatterns = [
     path('moderation/approve/<slug:slug>/', approve_listing_view, name='approve_listing'),
     path('moderation/reject/<slug:slug>/', reject_listing_view, name='reject_listing'),
     path('feature/<slug:slug>/', make_listing_featured_view, name='make_listing_featured'),
+    path('payment/<slug:slug>/', payment_page_view, name='payment_page'),
+    path('payment-confirm/<slug:slug>/', confirm_payment_view, name='confirm_payment'),
 ]

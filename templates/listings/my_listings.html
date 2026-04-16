@@ -122,10 +122,16 @@
                                     Tahrirlash
                                 </a>
 
-                                {% if listing.status == 'approved' and not listing.is_featured %}
-                                    <a href="{% url 'make_listing_featured' listing.slug %}" class="btn btn-primary">
-                                        🔥 TOP qilish
-                                    </a>
+                                {% if listing.status == 'approved' %}
+                                    {% if not listing.is_featured %}
+                                        <a href="{% url 'payment_page' listing.slug %}" class="btn btn-primary">
+                                            🔥 TOP qilish
+                                        </a>
+                                    {% elif not listing.featured_until or listing.featured_until < now %}
+                                        <a href="{% url 'payment_page' listing.slug %}" class="btn btn-primary">
+                                            🔥 TOP qilish
+                                        </a>
+                                    {% endif %}
                                 {% endif %}
 
                                 {% if listing.is_featured %}

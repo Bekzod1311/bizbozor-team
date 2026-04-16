@@ -10,6 +10,8 @@ from django.core.paginator import Paginator
 from django.contrib.auth.models import User
 from django.contrib.admin.views.decorators import staff_member_required
 import re
+from django.utils import timezone
+from datetime import timedelta
 
 BAD_WORDS = [
     'sex', 'porn', 'xxx', 'nude',
@@ -241,6 +243,7 @@ def my_listings_view(request):
         'pending': pending,
         'inactive': inactive,
         'delete_requested': delete_requested,
+        'now':timezone.now()
     }
 
     return render(request, 'listings/my_listings.html', context)
@@ -668,4 +671,29 @@ def make_listing_featured_view(request, slug):
     )
 
     messages.success(request, "E'lon TOP holatga o'tkazildi.")
+    return redirect('business_detail', slug=listing.slug)
+
+@login_required
+def payment_page_view(request, slug):
+    listing = get_object_or_404(Listing, slug=slug, owner=request.user)
+
+    if listing.status != 'approved':
+        messages.error(request, "Faqat tasdiqlangan e'lonni TOP qilish mumkin.")
+        return redirect('my_listings')
+
+    context = {
+        'listing': listing,
+        'price': 20000  # 20 000 so‘m demo
+    }
+    return render(request, 'listings/payment.html', context)
+
+@login_required
+def confirm_payment_view(request, slug):
+    listing = get_object_or_404(Listing, slug=slug, owner=request.user)
+
+    listing.is_featured = True
+    listing.featured_until = timezone.now() + timedelta(days=7)
+    listing.save()
+
+    messages.success(request, "To‘lov muvaffaqiyatli! E'lon TOP bo‘ldi.")
     return redirect('business_detail', slug=listing.slug)

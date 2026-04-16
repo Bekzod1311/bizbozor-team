@@ -1,0 +1,120 @@
+{% extends 'base.html' %}
+{% load humanize %}
+
+{% block title %}TOP e'lon qilish | BizBozor{% endblock %}
+
+{% block content %}
+<section class="page-section">
+    <div class="container" style="max-width: 1100px;">
+
+        <div class="payment-layout">
+
+            <!-- LEFT -->
+            <div class="payment-main-card">
+                <div class="payment-header">
+                    <div class="payment-icon">🔥</div>
+                    <div>
+                        <h1 class="payment-title">TOP e'lon qilish</h1>
+                        <p class="payment-subtitle">
+                            E'loningizni asosiy sahifada va qidiruv natijalarida yuqoriroq ko‘rsatish uchun premium joylashtirish.
+                        </p>
+                    </div>
+                </div>
+
+                <div class="payment-methods">
+                    <div class="payment-method active">
+                        <div class="payment-method-badge click-badge">CLICK</div>
+                        <div class="payment-method-text">
+                            <strong>Click uslubidagi to‘lov</strong>
+                            <span>Tezkor va qulay to‘lov tajribasi</span>
+                        </div>
+                    </div>
+
+                    <div class="payment-method">
+                        <div class="payment-method-badge payme-badge">PAYME</div>
+                        <div class="payment-method-text">
+                            <strong>Payme uslubidagi to‘lov</strong>
+                            <span>Bir necha bosqichda soddalashtirilgan checkout</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="payment-info-box">
+                    <h3>Nima olasiz?</h3>
+                    <ul class="payment-benefits">
+                        <li>TOP badge bilan ajralib turadi</li>
+                        <li>Kategoriya sahifasida yuqoriroq chiqadi</li>
+                        <li>Ko‘proq ko‘rish va bosish ehtimoli oshadi</li>
+                    </ul>
+                </div>
+
+                <div class="payment-warning">
+                    ⚠️ Hozir bu demo checkout. Keyin real Click/Payme integratsiya ulaymiz.
+                </div>
+            </div>
+
+            <!-- RIGHT -->
+            <div class="payment-summary-card">
+                <h2 class="payment-summary-title">Buyurtma tafsiloti</h2>
+
+                <div class="payment-listing-card">
+                    <div class="payment-listing-image">
+                        {% if listing.main_image %}
+                            <img src="{{ listing.main_image.url }}" alt="{{ listing.title }}">
+                        {% else %}
+                            <div class="payment-placeholder">BizBozor</div>
+                        {% endif %}
+                    </div>
+
+                    <div class="payment-listing-info">
+                        <div class="payment-listing-label">E'lon</div>
+                        <div class="payment-listing-name">{{ listing.title }}</div>
+                        <div class="payment-listing-price">{{ listing.price|intcomma }} so'm</div>
+                    </div>
+                </div>
+
+                <div class="payment-summary-box">
+                    <div class="payment-row">
+                        <span>Xizmat</span>
+                        <strong>TOP joylashtirish</strong>
+                    </div>
+
+                    <div class="payment-row">
+                        <span>Davomiyligi</span>
+                        <strong>Demo rejim</strong>
+                    </div>
+
+                    <div class="payment-row">
+                        <span>Oddiy narx</span>
+                        <span style="text-decoration: line-through; color:#94a3b8;">50,000 so'm</span>
+                    </div>
+
+                    <div class="payment-row total">
+                        <span>Bugungi narx</span>
+                        <strong>{{ price|intcomma }} so'm</strong>
+                    </div>
+                </div>
+                
+                <p style="margin-bottom:12px; color:#dc2626; font-weight:600;">
+                    ⚡ Bugun TOP qilsangiz — darhol yuqoriga chiqasiz
+                </p>
+
+                <a href="{% url 'confirm_payment' listing.slug %}" class="payment-pay-btn">
+                    To‘lash (demo)
+                </a>
+
+                <p style="margin-top:10px; color:#16a34a; font-size:14px;">
+                    ✔ Oxirgi 24 soatda 12 ta e'lon TOP qilindi
+                </p>
+
+
+                <a href="{% url 'business_detail' listing.slug %}" class="payment-cancel-btn">
+                    Bekor qilish
+                </a>
+            </div>
+
+        </div>
+
+    </div>
+</section>
+{% endblock %}

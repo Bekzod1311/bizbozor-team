@@ -48,7 +48,9 @@
                     {% for listing in featured_listings %}
                         <div class="business-card">
                             <div class="business-card-image" style="position: relative;">
-                                <span class="featured-badge">TOP</span>
+                                {% if listing.is_featured and listing.featured_until and listing.featured_until > now %}
+                                    <span class="featured-badge">TOP</span>
+                                {% endif %}
 
                                 {% if listing.slug %}
                                     <a href="{% url 'business_detail' listing.slug %}">
@@ -127,7 +129,11 @@
                 <div class="business-grid">
                     {% for listing in popular_listings %}
                         <div class="business-card">
-                            <div class="business-card-image">
+                            <div class="business-card-image" style="position: relative;">
+                                {% if listing.is_featured and listing.featured_until and listing.featured_until > now %}
+                                    <span class="featured-badge">TOP</span>
+                                {% endif %}
+
                                 {% if listing.slug %}
                                     <a href="{% url 'business_detail' listing.slug %}">
                                         {% if listing.main_image %}

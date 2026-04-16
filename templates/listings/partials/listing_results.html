@@ -6,7 +6,7 @@
         {% for listing in listings %}
             <div class="business-card">
                 <div class="business-card-image" style="position: relative;">
-                    {% if listing.is_featured %}
+                    {% if listing.is_featured and listing.featured_until and listing.featured_until > now %}
                         <span class="featured-badge">TOP</span>
                     {% endif %}
 
