@@ -129,6 +129,13 @@
                             {% endif %}
                         </a>
                     {% endif %}
+
+                    {% if request.user == listing.owner and listing.status == 'approved' and not listing.is_featured %}
+                        <a href="{% url 'make_listing_featured' listing.slug %}" class="btn btn-primary">
+                            🔥 TOP qilish
+                        </a>
+                    {% endif %}   
+
                 </div>
 
             </div>

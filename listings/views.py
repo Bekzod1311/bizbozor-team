@@ -644,3 +644,28 @@ def reject_listing_view(request, slug):
 
     messages.warning(request, "E'lon rad etildi")
     return redirect('moderation_queue')
+
+
+# Featured + Top Button
+@login_required
+def make_listing_featured_view(request, slug):
+    listing = get_object_or_404(Listing, slug=slug, owner=request.user)
+
+    if listing.status != 'approved':
+        messages.warning(request, "Faqat tasdiqlangan e'lonni TOP qilish mumkin.")
+        return redirect('my_listings')
+
+    listing.is_featured = True
+    listing.save()
+
+    create_audit_log(
+        listing=listing,
+        actor=request.user,
+        action='updated',
+        old_status=listing.status,
+        new_status=listing.status,
+        note="User e'lonni TOP holatga o'tkazdi."
+    )
+
+    messages.success(request, "E'lon TOP holatga o'tkazildi.")
+    return redirect('business_detail', slug=listing.slug)

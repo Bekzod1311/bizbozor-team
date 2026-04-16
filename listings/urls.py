@@ -17,6 +17,7 @@ from .views import (
     moderation_queue_view,
     approve_listing_view,
     reject_listing_view,
+    make_listing_featured_view,
 )
 
 urlpatterns = [
@@ -49,4 +50,5 @@ urlpatterns = [
     path('moderation/', moderation_queue_view, name='moderation_queue'),
     path('moderation/approve/<slug:slug>/', approve_listing_view, name='approve_listing'),
     path('moderation/reject/<slug:slug>/', reject_listing_view, name='reject_listing'),
+    path('feature/<slug:slug>/', make_listing_featured_view, name='make_listing_featured'),
 ]

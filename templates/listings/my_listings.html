@@ -122,6 +122,18 @@
                                     Tahrirlash
                                 </a>
 
+                                {% if listing.status == 'approved' and not listing.is_featured %}
+                                    <a href="{% url 'make_listing_featured' listing.slug %}" class="btn btn-primary">
+                                        🔥 TOP qilish
+                                    </a>
+                                {% endif %}
+
+                                {% if listing.is_featured %}
+                                    <span class="status-badge" style="background:#fff7ed; color:#ea580c;">
+                                        🔥 TOP e'lon
+                                    </span>
+                                {% endif %}  
+
                                 {% if listing.status != 'inactive' and listing.status != 'delete_requested' %}
                                     <a href="{% url 'deactivate_listing' listing.slug %}" class="detail-btn dashboard-btn-danger">
                                         Faol emas qilish
