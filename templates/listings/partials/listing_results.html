@@ -5,7 +5,11 @@
     <div class="business-grid">
         {% for listing in listings %}
             <div class="business-card">
-                <div class="business-card-image">
+                <div class="business-card-image" style="position: relative;">
+                    {% if listing.is_featured %}
+                        <span class="featured-badge">TOP</span>
+                    {% endif %}
+
                     {% if listing.main_image %}
                         <img src="{{ listing.main_image.url }}" alt="{{ listing.title }}">
                     {% endif %}

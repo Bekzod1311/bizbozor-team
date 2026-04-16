@@ -471,13 +471,13 @@ def category_list_view(request, category_slug):
 
     # Sorting
     if sort == 'oldest':
-        listings = listings.order_by('created_at')
+        listings = listings.order_by('-is_featured', 'created_at')
     elif sort == 'price_low':
-        listings = listings.order_by('price')
+        listings = listings.order_by('-is_featured', 'price')
     elif sort == 'price_high':
-        listings = listings.order_by('-price')
+        listings = listings.order_by('-is_featured', '-price')
     else:
-        listings = listings.order_by('-created_at')
+        listings = listings.order_by('-is_featured', '-created_at')
 
     regions = Region.objects.all().order_by('name_uz')
 

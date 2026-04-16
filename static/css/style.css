@@ -1186,3 +1186,18 @@ a:hover {
     border-color: #22afff;
     box-shadow: 0 0 0 4px rgba(34, 175, 255, 0.12);
 }
+
+.featured-badge {
+    position: absolute;
+    top: 12px;
+    left: 12px;
+    z-index: 2;
+    background: linear-gradient(135deg, #f59e0b, #f97316);
+    color: #fff;
+    font-size: 12px;
+    font-weight: 800;
+    padding: 7px 12px;
+    border-radius: 999px;
+    box-shadow: 0 6px 18px rgba(249, 115, 22, 0.25);
+    letter-spacing: 0.4px;
+}

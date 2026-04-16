@@ -166,6 +166,8 @@ class Listing(models.Model):
         verbose_name="Faol biznesmi?"
     )
 
+    is_featured = models.BooleanField(default=False, verbose_name="Featured e'lonmi?")
+
     status = models.CharField(
         max_length=20,
         choices=STATUS_CHOICES,

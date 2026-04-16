@@ -51,7 +51,8 @@ class ListingAdmin(admin.ModelAdmin):
         'approved_by',
         'approved_at',
         'view_count',
-        'created_at'
+        'created_at',
+        'is_featured',
     )
 
     list_filter = (
@@ -60,6 +61,7 @@ class ListingAdmin(admin.ModelAdmin):
         'region',
         'created_at',
         'approved_at',
+        'is_featured',
     )
 
     search_fields = (
@@ -72,6 +74,7 @@ class ListingAdmin(admin.ModelAdmin):
 
     list_editable = (
         'price',
+        'is_featured',
     )
 
     ordering = ('-created_at',)
